@@ -1,4 +1,12 @@
 
+#' Make legal row/column names
+#'
+#' make legal row/column names
+#' @param x character vector of names to make legal
+#' @return The legal row/column names
+#' @examples
+#' rown <- makeLegalRowname(mets);
+#' @export
 makeLegalRowname = function(mets){
   rown = tolower(trimws(mets))
   rown = sapply(rown, function(x) sub("\\*","",x, perl = FALSE))
@@ -6,6 +14,14 @@ makeLegalRowname = function(mets){
   return(rown)
 }
 
+#' Make legal row/column names
+#'
+#' make legal row/column names
+#' @param x character vector of names to make legal
+#' @return The legal row/column names
+#' @examples
+#' rown <- makeLegalRowname(mets);
+#' @export
 cleanUpRownames = function(mat, useRownames=FALSE) {
   if (useRownames) {
     tmp = rownames(mat)
@@ -31,6 +47,15 @@ cleanUpRownames = function(mat, useRownames=FALSE) {
   return(mat)
 }
 
+#' Impute missing values as minimum
+#'
+#' Impute using uniform random variable, where a = 0.99*observed minimum, and b = observed minimum
+#' @param data - Normalized data matrix. Features as rows, samples as columns.
+#' @param ref - Normalized reference data matrix. Features as rows, samples as columns.
+#' @return imputed data
+#' @examples
+#' zscored.data=imputeMissingValues(dis_data,ref_data)
+#' @export dimputeMissingValues
 imputeMissingValues = function(data, ref) {
   data = data[which(rownames(data) %in% rownames(ref)),]
   ref = ref[which(rownames(ref) %in% rownames(data)),]
@@ -48,29 +73,48 @@ imputeMissingValues = function(data, ref) {
     min_row = min(rowData)
     if (min_row<0) {
       min_row = -1*min_row
-      imputed.data[met, is.na(data[met,])] = tryCatch(-1*runif(sum(is.na(data[met,])), min = 0.99*min_row, max= min_row), 
+      imputed.data[met, is.na(data[met,])] = tryCatch(-1*runif(sum(is.na(data[met,])), min = 0.99*min_row, max= min_row),
                                                       error = function(e) e, warning=function(w) print(sprintf("%s: met%d", w, met)))
     } else {
-      imputed.data[met, is.na(data[met,])] = tryCatch(runif(sum(is.na(data[met,])), min = 0.99*min(rowData), max= min(rowData)), 
+      imputed.data[met, is.na(data[met,])] = tryCatch(runif(sum(is.na(data[met,])), min = 0.99*min(rowData), max= min(rowData)),
                                                       error = function(e) e, warning=function(w) print(sprintf("%s: met%d", w, met)))
     }
   }
   return(imputed.data)
 }
 
+#' Z-transform available data
+#'
+#' The z-transform is meant to work with normalized,
+#' imputed data
+#' @param data - Normalized, imputed data. Data matrix includes
+#'               features as rows, samples as columns.
+#' @param ref - Normalized, imputed reference sample data. Data
+#'              includes features as rows, samples as columns.
+#' @return zscored.data - Z-transformed data.
+#' @importFrom stats quantile qqnorm lm
+#' @export data.zscoreData
+#' @examples
+#' dis_data = matrix(rexp(500), ncol=100)
+#' rownames(dis_data)=sprintf("Feature%d",seq_len(nrow(dis_data)))
+#' colnames(dis_data)=sprintf("Sample%d",seq_len(ncol(dis_data)))
+#' ref_data = matrix(rexp(500), ncol=100)
+#' rownames(ref_data)=sprintf("Feature%d",seq_len(nrow(ref_data)))
+#' colnames(ref_data)=sprintf("Sample%d",seq_len(ncol(ref_data)))
+#' zscored.data=data.zscoreData(dis_data,ref_data)
 zscoreData = function(data, ref) {
   print("zscoreData() called.")
-  
+
   # Only metabolites that also occur in the reference population can be z-scored
   data = data[which(rownames(data) %in% rownames(ref)),]
   ref = ref[which(rownames(ref) %in% rownames(data)),]
   data = data[sort(rownames(data)),]
   ref = ref[sort(rownames(ref)),]
-  
+
   # Log transform data
   data = log(data)
   ref = log(data.matrix(ref))
-  
+
   zscore.data = matrix(NA, nrow=nrow(data), ncol=ncol(data))
   rownames(zscore.data) = rownames(data)
   colnames(zscore.data) = colnames(data)
@@ -83,7 +127,7 @@ zscoreData = function(data, ref) {
       x = met_data
     }
     if (all(is.na(x))) {
-      
+
     } else {
       #x = x[intersect(which(x>quantile(x, 0.025)), which(x<quantile(x, .975)))]
       d = qqnorm(x, plot.it = FALSE);
@@ -97,21 +141,46 @@ zscoreData = function(data, ref) {
       zscore.data[met,] = (data[met, ]-mn.est)/sd.est
     }
   }
-  
+
   return(zscore.data)
 }
 
+#' Format and numerize dataset
+
+#' @param x - Data matrix
+#' @export
 formatNumDataset=function(x){
   x=cleanUpRownames(x,useRownames = F)
   x=apply(x, c(1,2), as.numeric)
 }
 
+changeColNames=function(x,ind,newNames){
+  colnames(x)[ind]=newNames
+  return(x)
+}
 
+#' Combine datasets
+#'
+#' @param ref - Current data matrix
+#' @param research - Data matrix you want to combine with ref.
+#' @return combined.data - Combined data matrix.
+#' @export data.combineData
+#' @examples
+#' # Row names and column names are required for both input matrices.
+#' ref=matrix(rnorm(500), ncol=100)
+#' rownames(ref)=sprintf("Feature%d",sample(seq_len(20),
+#'                                 nrow(ref),replace = FALSE))
+#' colnames(ref)=sprintf("Sample%d", seq_len(ncol(ref)))
+#' research=matrix(rnorm(500), ncol=100)
+#' rownames(research)=sprintf("Feature%d",sample(seq_len(20),
+#'                                 nrow(ref),replace = FALSE))
+#' colnames(research) = sprintf("Sample%d", seq_len(ncol(ref)))
+#' combined.data = data.combineData(ref, research)
 combineDatasets = function(ref, research) {
   print("combineDatasets() called.")
   ref = as.matrix(ref)
   research = as.matrix(research)
-  
+
   unionMets = unique(c(rownames(ref), rownames(research)))
   data = matrix(0, nrow=length(unionMets), ncol=ncol(ref)+ncol(research))
   rownames(data) = unionMets
@@ -122,14 +191,14 @@ combineDatasets = function(ref, research) {
     } else {
       data[r,colnames(ref)] = rep(NA, ncol(ref))
     }
-    
+
     if (unionMets[r] %in% rownames(research)) {
       data[r,colnames(research)] = as.numeric(research[unionMets[r], ])
     } else {
       data[r,colnames(research)] = rep(NA, ncol(research))
     }
   }
-  
+
   return(data)
 }
 

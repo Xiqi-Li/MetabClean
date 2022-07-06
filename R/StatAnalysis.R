@@ -1,5 +1,5 @@
 
-# metabolome summary stats
+# summary stats
 
 #' Get feature fill rate
 #'
@@ -81,11 +81,14 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL){
 #'
 #' perform profile-wise t-test
 #' @param dataMatrix The data matrix
-#' @param classVector vector matching colnames to catagories
+#' @param classVector vector matching colnames to categories
+#' @param dataGroup1 The group 1 data matrix. Feature by row, sample by column.
+#' @param dataGroup2 The group 2 data matrix. Feature by row, sample by column.
 #' @return A data frame of mean differences and p-values
+#' @section perform t-test by row
 #' @examples
 #' t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));;
-#' @export
+#' @rdname performTtestsAllRows
 performTtestsAllRows = function(dataGroup1,dataGroup2){
   nGroup1 = ncol(dataGroup1)
   nGroup2 = ncol(dataGroup2)
@@ -105,6 +108,8 @@ performTtestsAllRows = function(dataGroup1,dataGroup2){
   results
 }
 
+#' @section perform t-test by group, one versus the rest of all groups
+#' @rdname performTtestsAllClassesOneVsRest
 performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
     stop("Number of columns of data matrix must be equal to the length of the class vector")
@@ -130,6 +135,8 @@ performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   return(result)
 }
 
+#' @section perform t-test by group, in a pair wise manner
+#' @rdname performTtestsAllClassesEachPair
 performTtestsAllClassesEachPair = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
     stop("Number of columns of data matrix must be equal to the length of the class vector")
