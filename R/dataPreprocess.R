@@ -1,4 +1,6 @@
 
+# proprocessing functions
+
 #' Make legal row/column names
 #'
 #' make legal row/column names
@@ -6,7 +8,7 @@
 #' @return The legal row/column names
 #' @examples
 #' rown <- makeLegalRowname(mets);
-#' @export
+#' @export makeLegalRowname
 makeLegalRowname = function(mets){
   rown = tolower(trimws(mets))
   rown = sapply(rown, function(x) sub("\\*","",x, perl = FALSE))
@@ -55,7 +57,7 @@ cleanUpRownames = function(mat, useRownames=FALSE) {
 #' @return imputed data
 #' @examples
 #' zscored.data=imputeMissingValues(dis_data,ref_data)
-#' @export dimputeMissingValues
+#' @export imputeMissingValues
 imputeMissingValues = function(data, ref) {
   data = data[which(rownames(data) %in% rownames(ref)),]
   ref = ref[which(rownames(ref) %in% rownames(data)),]
@@ -93,7 +95,6 @@ imputeMissingValues = function(data, ref) {
 #'              includes features as rows, samples as columns.
 #' @return zscored.data - Z-transformed data.
 #' @importFrom stats quantile qqnorm lm
-#' @export data.zscoreData
 #' @examples
 #' dis_data = matrix(rexp(500), ncol=100)
 #' rownames(dis_data)=sprintf("Feature%d",seq_len(nrow(dis_data)))
@@ -102,6 +103,7 @@ imputeMissingValues = function(data, ref) {
 #' rownames(ref_data)=sprintf("Feature%d",seq_len(nrow(ref_data)))
 #' colnames(ref_data)=sprintf("Sample%d",seq_len(ncol(ref_data)))
 #' zscored.data=data.zscoreData(dis_data,ref_data)
+#' @export zscoreData
 zscoreData = function(data, ref) {
   print("zscoreData() called.")
 
@@ -146,8 +148,9 @@ zscoreData = function(data, ref) {
 }
 
 #' Format and numerize dataset
-
+#'
 #' @param x - Data matrix
+#' @return zscored.data - Z-transformed data.
 #' @export
 formatNumDataset=function(x){
   x=cleanUpRownames(x,useRownames = F)
@@ -164,7 +167,6 @@ changeColNames=function(x,ind,newNames){
 #' @param ref - Current data matrix
 #' @param research - Data matrix you want to combine with ref.
 #' @return combined.data - Combined data matrix.
-#' @export data.combineData
 #' @examples
 #' # Row names and column names are required for both input matrices.
 #' ref=matrix(rnorm(500), ncol=100)
@@ -176,6 +178,7 @@ changeColNames=function(x,ind,newNames){
 #'                                 nrow(ref),replace = FALSE))
 #' colnames(research) = sprintf("Sample%d", seq_len(ncol(ref)))
 #' combined.data = data.combineData(ref, research)
+#' @export
 combineDatasets = function(ref, research) {
   print("combineDatasets() called.")
   ref = as.matrix(ref)

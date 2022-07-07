@@ -7,9 +7,13 @@
 performTtestsAllRows(dataGroup1, dataGroup2)
 }
 \arguments{
+\item{dataGroup1}{The group 1 data matrix. Feature by row, sample by column.}
+
+\item{dataGroup2}{The group 2 data matrix. Feature by row, sample by column.}
+
 \item{dataMatrix}{The data matrix}
 
-\item{classVector}{vector matching colnames to catagories}
+\item{classVector}{vector matching colnames to categories}
 }
 \value{
 A data frame of mean differences and p-values
@@ -17,6 +21,10 @@ A data frame of mean differences and p-values
 \description{
 perform profile-wise t-test
 }
+\section{perform t-test by row}{
+NA
+}
+
 \examples{
 t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));;
 }

@@ -108,6 +108,8 @@ performTtestsAllRows = function(dataGroup1,dataGroup2){
   results
 }
 
+#' get t-test result by group, one versus the rest
+#'
 #' @section perform t-test by group, one versus the rest of all groups
 #' @rdname performTtestsAllClassesOneVsRest
 performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
@@ -135,6 +137,8 @@ performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   return(result)
 }
 
+#' get t-test result by group, pairwise
+#'
 #' @section perform t-test by group, in a pair wise manner
 #' @rdname performTtestsAllClassesEachPair
 performTtestsAllClassesEachPair = function(dataMatrix,classVector){
