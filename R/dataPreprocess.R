@@ -155,6 +155,7 @@ zscoreData = function(data, ref) {
 formatNumDataset=function(x){
   x=cleanUpRownames(x,useRownames = F)
   x=apply(x, c(1,2), as.numeric)
+  return(x)
 }
 
 changeColNames=function(x,ind,newNames){
