@@ -150,8 +150,14 @@ zscoreData = function(data, ref) {
 #' Format and numerize dataset
 #'
 #' @param x - Data matrix
-#' @return zscored.data - Z-transformed data.
+#' @param useRownames - True row names need to be changed to feature names
+#' @return numerated data matrix
 #' @export
+formatNumDataset=function(x,useRownames=F){
+  x=cleanUpRownames(x,useRownames = useRownames)
+  x=apply(x, c(1,2), as.numeric)
+  return(x)
+}
 formatNumDataset=function(x,useRownames=F){
   x=cleanUpRownames(x,useRownames = useRownames)
   x=apply(x, c(1,2), as.numeric)
