@@ -68,7 +68,7 @@ learnModel=function(data_mx,cases,controls,fillRateThreashold,useIgRef=F,ig_ref=
   print("learnModel() called.")
   print("Learning cases vs control network...")
   ig=learnPartialCorrelationGraph(data_mx,controls,controls,fillRateThreashold)
-  if(useIgRef=T){
+  if(useIgRef==T){
     print("Using provided control-only network...")
     ig_ref=ig_ref
   }else{
