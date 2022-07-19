@@ -72,6 +72,7 @@ learnModel=function(data_mx,cases,controls,fillRateThreashold,useIgRef=F,ig_ref=
     print("Using provided control-only network...")
     ig_ref=ig_ref
   }else{
+    if(!is.null(ig_ref)){message("User provided reference graph not used; overode by useIgRef")}
     print("Learning control-only network...")
     ig_ref=learnPartialCorrelationGraph(data_mx,cases,controls,fillRateThreashold)
   }
