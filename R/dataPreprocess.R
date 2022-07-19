@@ -158,12 +158,14 @@ formatNumDataset=function(x,useRownames=F){
   x=apply(x, c(1,2), as.numeric)
   return(x)
 }
-formatNumDataset=function(x,useRownames=F){
-  x=cleanUpRownames(x,useRownames = useRownames)
-  x=apply(x, c(1,2), as.numeric)
-  return(x)
-}
 
+#' change column names
+#'
+#' @param x - Data matrix
+#' @param ind - vector of index of colnames needed to be changed
+#' @param newNames - new column names
+#' @return data matrix with changed column names
+#' @export
 changeColNames=function(x,ind,newNames){
   colnames(x)[ind]=newNames
   return(x)
