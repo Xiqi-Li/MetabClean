@@ -4,15 +4,19 @@
 \alias{formatNumDataset}
 \title{Format and numerize dataset}
 \usage{
-formatNumDataset(x)
+formatNumDataset(x, useRownames = F)
 }
 \arguments{
 \item{x}{\itemize{
 \item Data matrix
 }}
+
+\item{useRownames}{\itemize{
+\item True row names need to be changed to feature names
+}}
 }
 \value{
-zscored.data - Z-transformed data.
+numerated data matrix
 }
 \description{
 Format and numerize dataset
