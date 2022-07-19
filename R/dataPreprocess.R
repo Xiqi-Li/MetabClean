@@ -152,8 +152,8 @@ zscoreData = function(data, ref) {
 #' @param x - Data matrix
 #' @return zscored.data - Z-transformed data.
 #' @export
-formatNumDataset=function(x){
-  x=cleanUpRownames(x,useRownames = F)
+formatNumDataset=function(x,useRownames=F){
+  x=cleanUpRownames(x,useRownames = useRownames)
   x=apply(x, c(1,2), as.numeric)
   return(x)
 }
