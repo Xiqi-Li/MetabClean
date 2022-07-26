@@ -16,6 +16,7 @@ getFill=function(x,byColumn=F){
   }else{
     fill=apply(x, 1, function(x) sum(is.na(x)))/ncol(x)
   }
+  names(fill)=rownames(x)
   return(1-fill)
 }
 
