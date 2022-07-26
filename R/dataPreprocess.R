@@ -147,7 +147,7 @@ zscoreData = function(data, ref) {
   return(zscore.data)
 }
 
-#' Format and numericize dataset
+#' Format and convert dataset to numeric matrix
 #'
 #' @param x - Data matrix
 #' @param useRownames - True row names need to be changed to feature names
