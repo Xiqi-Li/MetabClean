@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataPreprocess.R
 \name{formatNumDataset}
 \alias{formatNumDataset}
-\title{Format and numerize dataset}
+\title{Format and convert data set to numeric matrix}
 \usage{
 formatNumDataset(x, useRownames = F)
 }
@@ -16,8 +16,8 @@ formatNumDataset(x, useRownames = F)
 }}
 }
 \value{
-numerated data matrix
+numeric data matrix
 }
 \description{
-Format and numerize dataset
+Format and convert data set to numeric matrix
 }

@@ -49,6 +49,7 @@ orderNCut=function(x,threshold,N){
   x=x[abs(x)>threshold]
   x=x[order(abs(x),decreasing = T)]
   if(length(x)>N){x=x[1:N]}
+  return(x)
 }
 
 #' get association
