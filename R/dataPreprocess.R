@@ -11,7 +11,7 @@
 #' @export makeLegalRowname
 makeLegalRowname = function(mets){
   rown = tolower(trimws(mets))
-  rown = sapply(rown, function(x) sub("\\*|\\\|\\(1)|\\(2)|\\(3)|\\[1]|\\[2]","",x, perl = FALSE))
+  rown = sapply(rown, function(x) gsub("\\*| \\(1)| \\(2)| \\(3)| \\[1]| \\[2]","",x, perl = FALSE))
   rown = trimws(rown)
   return(rown)
 }
