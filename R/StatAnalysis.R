@@ -59,6 +59,7 @@ orderNCut=function(x,threshold,N){
 #' @param ress vector containing all names of all response
 #' @param preds vector containing all names of all predictors
 #' @param ctrlVs varaibles that need to be controled for
+#' @param padjMethod p-value adjustment method
 #' @return A data frame of coeffecients and p-values
 #' @examples
 #' assc = getAssociatio(D, ress=c("age","gender"), preds=grep("feature",colnames(D),value=T));
@@ -73,7 +74,7 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL,padj.method="bonferroni"){
       mod=lm(data = D, as.formula(formu))
       assc[r,c("outcome","exposure","coef","pVal")]=c(res,pred,summary(mod)$coefficients[2,1],summary(mod)$coefficients[2,4])
     }
-    assc[,"padj"]=p.adjust(assc[,"pVal"],method = padj.method)#
+    assc[,"padj"]=p.adjust(assc[,"pVal"],method = padjMethod)#
   }
   return(assc)
 }
