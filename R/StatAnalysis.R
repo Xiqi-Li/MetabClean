@@ -63,7 +63,7 @@ orderNCut=function(x,threshold,N){
 #' @examples
 #' assc = getAssociatio(D, ress=c("age","gender"), preds=grep("feature",colnames(D),value=T));
 #' @export
-getAssociation=function(D,ress,preds,ctrlVs=NULL){
+getAssociation=function(D,ress,preds,ctrlVs=NULL,padj.method="bonferroni"){
   assc=data.frame(outcome=character(),exposure=character(),coef=numeric(),pVal=numeric(),padj=numeric())
   r=0
   for (res in ress){
@@ -73,7 +73,7 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL){
       mod=lm(data = D, as.formula(formu))
       assc[r,c("outcome","exposure","coef","pVal")]=c(res,pred,summary(mod)$coefficients[2,1],summary(mod)$coefficients[2,4])
     }
-    assc[,"padj"]=p.adjust(assc[,"pVal"],method = "bonferroni")#
+    assc[,"padj"]=p.adjust(assc[,"pVal"],method = padj.method)#
   }
   return(assc)
 }
