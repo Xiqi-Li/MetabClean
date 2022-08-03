@@ -4,7 +4,7 @@
 \alias{getAssociation}
 \title{get association}
 \usage{
-getAssociation(D, ress, preds, ctrlVs = NULL, padj.method = "bonferroni")
+getAssociation(D, ress, preds, ctrlVs = NULL, padjMethod = "bonferroni")
 }
 \arguments{
 \item{D}{The data frame containing predictors, responses and covariates}

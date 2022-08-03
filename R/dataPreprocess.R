@@ -16,6 +16,26 @@ makeLegalRowname = function(mets){
   return(rown)
 }
 
+
+#' timeStamp
+#'
+#' get current time stamp
+#' @param date Boolean. Show date?
+#' @return time stamp
+#' @examples
+#' timeStamp();
+#' @export
+timeStamp = function(date=F){
+  timestamp=unlist(strsplit(date()," "))
+  timestamp=timestamp[timestamp!=""]
+  if(date){
+    timestamp=paste(timestamp[c(5,2,3)],collapse = "")
+    }else{
+      timestamp=paste(timestamp[c(5,2)],collapse = "")
+    }
+  return(timestamp)
+}
+
 #' Make legal row/column names
 #'
 #' make legal row/column names
