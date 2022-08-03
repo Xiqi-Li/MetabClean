@@ -4,7 +4,7 @@
 \alias{getAssociation}
 \title{get association}
 \usage{
-getAssociation(D, ress, preds, ctrlVs = NULL)
+getAssociation(D, ress, preds, ctrlVs = NULL, padj.method = "bonferroni")
 }
 \arguments{
 \item{D}{The data frame containing predictors, responses and covariates}
@@ -14,6 +14,8 @@ getAssociation(D, ress, preds, ctrlVs = NULL)
 \item{preds}{vector containing all names of all predictors}
 
 \item{ctrlVs}{varaibles that need to be controled for}
+
+\item{padjMethod}{p-value adjustment method}
 }
 \value{
 A data frame of coeffecients and p-values
