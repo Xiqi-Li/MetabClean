@@ -108,7 +108,6 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
       message('Please provide node set S if useS is TRUE.')
     }
   }
-
   ## get adjacency_matrix and G
   adjacency_matrix = as.matrix(get.adjacency(ig, attr="weight"))
   G = vector(mode="list", length=length(V(ig)$name))
@@ -142,6 +141,7 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
   }
 
   # compute Module and p-value
+  S=S[S %in% names(ranks)]
   ptBSbyK = CTD::mle.getPtBSbyK(S, ranks,num.misses = log2(length(G))) # have to specify num.misses to make sure part of ranks work as same as full ranks
   res = CTD::mle.getEncodingLength(ptBSbyK, NULL, NULL, G)
   best_module=ptBSbyK[[which.max(res$d.score)]]
@@ -149,7 +149,7 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
   bestCompressedNodeSet=S[S %in% bestMod]
   if(max(res$d.score)<0){max(res$d.score)=0}
   result=list(`compressed node set`=bestCompressedNodeSet,
-              `p-value`=2^-(max(res$d.score)))
+              `p-value`=2^-(max(res$d.score)),`profile value of input S`=profile[S])
   if(!useS){result[["profile value"]]=profile[bestCompressedNodeSet]}
 
   return(result)
