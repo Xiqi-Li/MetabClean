@@ -11,6 +11,9 @@ performTtestsAllClassesEachPair(dataMatrix, classVector)
 
 \item{classVector}{vector matching column names to categories}
 }
+\value{
+A data frame of mean differences and p-values
+}
 \description{
 get t-test result by group, pairwise
 }

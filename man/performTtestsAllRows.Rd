@@ -10,10 +10,6 @@ performTtestsAllRows(dataGroup1, dataGroup2)
 \item{dataGroup1}{The group 1 data matrix. Feature by row, sample by column.}
 
 \item{dataGroup2}{The group 2 data matrix. Feature by row, sample by column.}
-
-\item{dataMatrix}{The data matrix}
-
-\item{classVector}{vector matching colnames to categories}
 }
 \value{
 A data frame of mean differences and p-values

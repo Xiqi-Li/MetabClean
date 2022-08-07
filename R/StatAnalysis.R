@@ -85,8 +85,6 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL,padjMethod="bonferroni"){
 #' get t-test result
 #'
 #' perform profile-wise t-test by row
-#' @param dataMatrix The data matrix
-#' @param classVector vector matching colnames to categories
 #' @param dataGroup1 The group 1 data matrix. Feature by row, sample by column.
 #' @param dataGroup2 The group 2 data matrix. Feature by row, sample by column.
 #' @return A data frame of mean differences and p-values
@@ -137,6 +135,8 @@ performTtestsAllRows = function(dataGroup1,dataGroup2){
 #' get t-test result by group, one versus the rest
 #' @param dataMatrix The data matrix
 #' @param classVector vector matching column names to categories
+#' @examples performTtestsAllClassesOneVsRest(dataMatrix,classVector)
+#' @return A data frame of mean differences and p-values
 #' @export
 performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
@@ -168,6 +168,7 @@ performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
 #'
 #' @param dataMatrix The data matrix
 #' @param classVector vector matching column names to categories
+#' @return A data frame of mean differences and p-values
 #' @export
 performTtestsAllClassesEachPair = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
