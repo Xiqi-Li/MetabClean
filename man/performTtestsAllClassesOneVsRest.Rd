@@ -2,14 +2,15 @@
 % Please edit documentation in R/StatAnalysis.R
 \name{performTtestsAllClassesOneVsRest}
 \alias{performTtestsAllClassesOneVsRest}
-\title{get t-test result by group, one versus the rest}
+\title{get t-test result}
 \usage{
 performTtestsAllClassesOneVsRest(dataMatrix, classVector)
+}
+\arguments{
+\item{dataMatrix}{The data matrix}
+
+\item{classVector}{vector matching column names to categories}
 }
 \description{
 get t-test result by group, one versus the rest
 }
-\section{perform t-test by group, one versus the rest of all groups}{
-NA
-}
-

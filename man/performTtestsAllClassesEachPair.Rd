@@ -6,10 +6,11 @@
 \usage{
 performTtestsAllClassesEachPair(dataMatrix, classVector)
 }
+\arguments{
+\item{dataMatrix}{The data matrix}
+
+\item{classVector}{vector matching column names to categories}
+}
 \description{
 get t-test result by group, pairwise
 }
-\section{perform t-test by group, in a pair wise manner}{
-NA
-}
-

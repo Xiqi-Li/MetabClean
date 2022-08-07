@@ -19,12 +19,8 @@ performTtestsAllRows(dataGroup1, dataGroup2)
 A data frame of mean differences and p-values
 }
 \description{
-perform profile-wise t-test
+perform profile-wise t-test by row
 }
-\section{perform t-test by row}{
-NA
-}
-
 \examples{
-t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));;
+t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));
 }

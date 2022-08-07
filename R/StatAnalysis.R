@@ -84,16 +84,14 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL,padjMethod="bonferroni"){
 # t-test
 #' get t-test result
 #'
-#' perform profile-wise t-test
+#' perform profile-wise t-test by row
 #' @param dataMatrix The data matrix
 #' @param classVector vector matching colnames to categories
 #' @param dataGroup1 The group 1 data matrix. Feature by row, sample by column.
 #' @param dataGroup2 The group 2 data matrix. Feature by row, sample by column.
 #' @return A data frame of mean differences and p-values
-#' @section perform t-test by row
 #' @examples
-#' t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));;
-#' @rdname performTtestsAllRows
+#' t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));
 #' @export
 performTtestsAllRows = function(dataGroup1,dataGroup2){
   nGroup1 = ncol(dataGroup1)
@@ -134,10 +132,11 @@ performTtestsAllRows = function(dataGroup1,dataGroup2){
   results
 }
 
-#' get t-test result by group, one versus the rest
+#' get t-test result
 #'
-#' @section perform t-test by group, one versus the rest of all groups
-#' @rdname performTtestsAllClassesOneVsRest
+#' get t-test result by group, one versus the rest
+#' @param dataMatrix The data matrix
+#' @param classVector vector matching column names to categories
 #' @export
 performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
@@ -164,10 +163,11 @@ performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   return(result)
 }
 
+
 #' get t-test result by group, pairwise
 #'
-#' @section perform t-test by group, in a pair wise manner
-#' @rdname performTtestsAllClassesEachPair
+#' @param dataMatrix The data matrix
+#' @param classVector vector matching column names to categories
 #' @export
 performTtestsAllClassesEachPair = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
