@@ -149,8 +149,11 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
   bestCompressedNodeSet=S[S %in% bestMod]
   if(max(res$d.score)<0){max(res$d.score)=0}
   result=list(`compressed node set`=bestCompressedNodeSet,
-              `p-value`=2^-(max(res$d.score)),`profile value of input S`=profile[S])
-  if(!useS){result[["profile value"]]=profile[bestCompressedNodeSet]}
+              `p-value`=2^-(max(res$d.score)))
+  if(!useS){
+    result[["profile value"]]=profile[bestCompressedNodeSet]
+    result[["profile value of input S"]]=profile[S]
+    }
 
   return(result)
 }
