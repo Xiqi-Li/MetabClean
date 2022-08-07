@@ -74,6 +74,8 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL,padjMethod="bonferroni"){
       mod=lm(data = D, as.formula(formu))
       assc[r,c("outcome","exposure","coef","pVal")]=c(res,pred,summary(mod)$coefficients[2,1],summary(mod)$coefficients[2,4])
     }
+    assc$coef=as.numeric(assc$coef)
+    assc$pVal=as.numeric(assc$pVal)
     assc[,"padj"]=p.adjust(assc[,"pVal"],method = padjMethod)#
   }
   return(assc)
@@ -92,19 +94,40 @@ getAssociation=function(D,ress,preds,ctrlVs=NULL,padjMethod="bonferroni"){
 #' @examples
 #' t.result = performTtestsAllClassesOneVsRest(dataMatrix=data_mx,classVector=c("treatment1","treatment2","treatment1","control"));;
 #' @rdname performTtestsAllRows
+#' @export
 performTtestsAllRows = function(dataGroup1,dataGroup2){
   nGroup1 = ncol(dataGroup1)
   nGroup2 = ncol(dataGroup2)
   dataAll = cbind(dataGroup1,dataGroup2)
   tTestWithErrorHandling = function(x){
-    testResult = try(t.test(x[1:nGroup1],x[(nGroup1+1):(nGroup1+nGroup2)]),silent=TRUE);
-    if(is.character(testResult)){
-      warning(testResult)
-      c(NA,NA,NA)
-    }else{
-      c(testResult$p.value,testResult$estimate)
-    }
+    if(nGroup1==1){
+      testResult = try(t.test(mu=unlist(x[1:nGroup1]),x[(nGroup1+1):(nGroup1+nGroup2)]),silent=TRUE);
+      if(is.character(testResult)){
+        warning(testResult)
+        c(NA,NA,NA)
+        }else{
+          c(testResult$p.value,unlist(x[1:nGroup1]),testResult$estimate)
+        }
+
+      }else if(nGroup2==1){
+        testResult = try(t.test(x[1:nGroup1],mu=unlist(x[(nGroup1+1):(nGroup1+nGroup2)])),silent=TRUE);
+        if(is.character(testResult)){
+          warning(testResult)
+          c(NA,NA,NA)
+          }else{
+            c(testResult$p.value,testResult$estimate,unlist(x[(nGroup1+1):(nGroup1+nGroup2)]))
+          }
+        }else{
+          testResult = try(t.test(x[1:nGroup1],x[(nGroup1+1):(nGroup1+nGroup2)]),silent=TRUE);
+          if(is.character(testResult)){
+            warning(testResult)
+            c(NA,NA,NA)
+            }else{
+              c(testResult$p.value,testResult$estimate)
+            }
+        }
   }
+
   results = matrix(unlist(apply(dataAll,1,tTestWithErrorHandling)),ncol=3,byrow=TRUE)
   colnames(results) = c("P.value","Mean.group.1","Mean.group.2")
   rownames(results) = rownames(dataGroup1)
@@ -115,6 +138,7 @@ performTtestsAllRows = function(dataGroup1,dataGroup2){
 #'
 #' @section perform t-test by group, one versus the rest of all groups
 #' @rdname performTtestsAllClassesOneVsRest
+#' @export
 performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
     stop("Number of columns of data matrix must be equal to the length of the class vector")
@@ -144,6 +168,7 @@ performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
 #'
 #' @section perform t-test by group, in a pair wise manner
 #' @rdname performTtestsAllClassesEachPair
+#' @export
 performTtestsAllClassesEachPair = function(dataMatrix,classVector){
   if(ncol(dataMatrix)!=length(classVector)){
     stop("Number of columns of data matrix must be equal to the length of the class vector")
