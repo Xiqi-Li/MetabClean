@@ -17,3 +17,6 @@ A data frame of mean differences and p-values
 \description{
 get t-test result by group, pairwise
 }
+\examples{
+t.result = performTtestsAllClassesEachPair(dataMatrix,classVector)
+}

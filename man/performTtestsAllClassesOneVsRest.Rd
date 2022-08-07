@@ -18,5 +18,5 @@ A data frame of mean differences and p-values
 get t-test result by group, one versus the rest
 }
 \examples{
-performTtestsAllClassesOneVsRest(dataMatrix,classVector)
+t.result = performTtestsAllClassesOneVsRest(dataMatrix,classVector)
 }
