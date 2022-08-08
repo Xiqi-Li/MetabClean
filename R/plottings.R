@@ -26,6 +26,7 @@ plotBoxPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID
   df[,header4x]=sampleAttr[match(df[,header4ID],sampleAttr[,header4ID]),header4x]
   if(!is.null(header4color)){
     df[,header4color]=sampleAttr[match(df[,header4ID],sampleAttr[,header4ID]),header4color]
+    df=df[!is.na(df[,header4x])&!is.na(df[,header4color]),]
     p=ggpubr::ggboxplot(df, x = header4x ,
                         y = MOI,
                         combine = TRUE,
@@ -36,6 +37,7 @@ plotBoxPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID
                         color = header4color ,
                         palette = "Dark2")
   }else{
+    df=df[!is.na(df[,header4x]),]
     p=ggpubr::ggboxplot(df, x = header4x ,
                         y = MOI,
                         combine = TRUE,
