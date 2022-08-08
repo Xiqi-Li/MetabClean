@@ -28,8 +28,10 @@ learnPartialCorrelationGraph=function(data_mx,cases,controls,fillRateThreashold)
   case_data=case_data[getFill(case_data)>fillRateThreashold,]
   ref_data=ref_data[intersect(rownames(ref_data),rownames(case_data)),]
   case_data=case_data[intersect(rownames(ref_data),rownames(case_data)),]
-  data_mx=data.surrogateProfiles(data = case_data, std = 1, ref_data = ref_data)
-  data_mx = data_mx[,-which(duplicated(colnames(data_mx)))]
+  data_mx=CTD::data.surrogateProfiles(data = case_data, std = 1, ref_data = ref_data)
+  if(sum(duplicated(colnames(data_mx)))){
+    data_mx = data_mx[,-which(duplicated(colnames(data_mx)))]
+  }
   inv_covmatt = huge(t(data_mx), method="glasso")
   inv_covmatt_select = huge.select(inv_covmatt, criterion = "stars")
   inv_covmat = as.matrix(inv_covmatt_select$icov[[which(inv_covmatt_select$lambda==inv_covmatt_select$opt.lambda)]])
