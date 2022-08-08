@@ -7,7 +7,7 @@
 #' @param fillRateThreashold - percentage of allowed minimum non-NA value percentage per feature.
 #' @return learned network in igraph object
 #' @importFrom huge huge huge.select
-#' @importFrom igraph graph.adjacency
+#' @import igraph
 #' @importFrom CTD data.surrogateProfiles
 #' @examples
 #' data(Miller2015)
