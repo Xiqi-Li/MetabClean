@@ -1,12 +1,12 @@
-#' learn partial correlation graph
+#' PCA plot wrapper
 #'
-#' learn partial correlation-based graphic models
+#' plot PCA in plotly and ggplot
 #' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
 #' @param cases - vector of index or column names corresponding to cases
 #' @param controls - vector of index or column names corresponding to controls
 #' @param fillRateThreashold - percentage of allowed minimum non-NA value percentage per feature.
 #' @return learned network in igraph object
-#' @import plotly
+#' @import plotly ggplot
 #' @importFrom stats prcomp
 #' @importFrom CTD data.surrogateProfiles
 #' @examples

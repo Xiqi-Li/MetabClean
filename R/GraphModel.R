@@ -68,14 +68,14 @@ learnPartialCorrelationGraph=function(data_mx,cases,controls,fillRateThreashold)
 learnModel=function(data_mx,cases,controls,fillRateThreashold,useIgRef=F,ig_ref=NULL){
   print("learnModel() called.")
   print("Learning cases vs control network...")
-  ig=learnPartialCorrelationGraph(data_mx,controls,controls,fillRateThreashold)
+  ig=learnPartialCorrelationGraph(data_mx,cases,controls,fillRateThreashold)
   if(useIgRef==T){
     print("Using provided control-only network...")
     ig_ref=ig_ref
   }else{
     if(!is.null(ig_ref)){message("User provided reference graph not used; overode by useIgRef")}
     print("Learning control-only network...")
-    ig_ref=learnPartialCorrelationGraph(data_mx,cases,controls,fillRateThreashold)
+    ig_ref=learnPartialCorrelationGraph(data_mx,controls,controls,fillRateThreashold)
   }
   print("Pruning for condition-specific network...")
   ig_pruned = CTD::graph.naivePruning(ig, ig_ref)
