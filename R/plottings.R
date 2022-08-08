@@ -53,7 +53,7 @@ plotBoxPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID
 #' plot scatter plots
 #'
 #'
-#' @import reshape2 melt
+#' @importFrom reshape2 melt
 #'
 
 plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID,palette="Dark2"){
