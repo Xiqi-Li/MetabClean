@@ -53,6 +53,7 @@ learnPartialCorrelationGraph=function(data_mx,cases,controls,fillRateThreashold)
 #' @param useIgRef - Boolean. If TRUE, provide ig_ref as graph learned from references
 #' @param ig_ref - graph learned from references
 #' @return learned network in igraph object
+#' @import igraph
 #' @importFrom huge huge huge.select
 #' @importFrom CTD data.surrogateProfiles graph.naivePruning
 #' @examples
