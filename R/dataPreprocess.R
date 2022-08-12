@@ -170,7 +170,7 @@ zscoreData = function(data, ref) {
 #' Format and convert data set to numeric matrix
 #'
 #' @param x - Data matrix
-#' @param useRownames - True row names need to be changed to feature names
+#' @param useRownames - if True, row names need to be changed to feature names
 #' @return numeric data matrix
 #' @export
 formatNumDataset=function(x,useRownames=F){

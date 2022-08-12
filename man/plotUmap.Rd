@@ -52,5 +52,6 @@ plotUmap(
 learned network in igraph object
 }
 \description{
-ggplot wrapper for UMAP
+ggplot wrapper for UMAP.
+If number of features exceed 10000, 10\% of all features were randomly selected then ordered by level of variance. Out of them, top 1000 features were used.
 }

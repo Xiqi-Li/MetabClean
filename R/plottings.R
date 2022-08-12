@@ -1,4 +1,5 @@
 #' plot correlation between phenotypes or meta-level traits
+#'
 #' @importFrom Hmisc rcorr
 #' @param sampleAttr metadata table with phenotype data listed by columns
 #' @param type correlation method
@@ -11,6 +12,7 @@ plotCor=function(sampleAttr,type=c("pearson","spearman")){
 }
 
 #' plot box plots
+#'
 #' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
 #' @param sampleAttr - sample attributes; meta data
 #' @param MOI - molecule of interest. A subset of data_mx colnames.
@@ -52,9 +54,17 @@ plotBoxPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID
 
 #' plot scatter plots
 #'
+#' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
+#' @param sampleAttr - sample attributes; meta data
+#' @param MOI - molecule of interest. A subset of data_mx colnames.
+#' @param header4x - column name of sampelAttr used for x-axis categories.
+#' @param header4color - column name of sampelAttr used for color filling
+#' @param header4ID -column name of sampelAttr indicating sample IDs.
+#' @param palette color palette
 #'
 #' @importFrom reshape2 melt
-#'
+#' @example
+#' @export
 
 plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID,palette="Dark2"){
   df=as.data.frame(t(data_mx[MOI,]))
@@ -99,3 +109,21 @@ plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,heade
     xlab(header4x)+ylab("value")
   return(p)
 }
+
+#' #' plot blown-out modules in graph
+#' #'
+#' #' @param ig - igraph
+#' #' @param S - a set of node names
+#' #' @param header4x - column name of sampelAttr used for x-axis categories.
+#' #' @param header4color - column name of sampelAttr used for color filling
+#' #' @param header4ID -column name of sampelAttr indicating sample IDs.
+#' #' @param palette color palette
+#' #' @import visNetwork
+#' #' @importFrom reshape2 melt
+#' #' @example
+#' #' @export
+#' plotGraph=function(ig,S,size=NULL,membership,color=NULL,visNetworkOP=F,showLable=T){
+#'   if()
+#'
+#'
+#' }

@@ -12,7 +12,7 @@ formatNumDataset(x, useRownames = F)
 }}
 
 \item{useRownames}{\itemize{
-\item True row names need to be changed to feature names
+\item if True, row names need to be changed to feature names
 }}
 }
 \value{

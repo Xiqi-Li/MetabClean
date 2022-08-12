@@ -14,6 +14,31 @@ plotScatterPlot(
   palette = "Dark2"
 )
 }
+\arguments{
+\item{data_mx}{\itemize{
+\item Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
+}}
+
+\item{sampleAttr}{\itemize{
+\item sample attributes; meta data
+}}
+
+\item{MOI}{\itemize{
+\item molecule of interest. A subset of data_mx colnames.
+}}
+
+\item{header4x}{\itemize{
+\item column name of sampelAttr used for x-axis categories.
+}}
+
+\item{header4color}{\itemize{
+\item column name of sampelAttr used for color filling
+}}
+
+\item{header4ID}{-column name of sampelAttr indicating sample IDs.}
+
+\item{palette}{color palette}
+}
 \description{
 plot scatter plots
 }

@@ -2,7 +2,8 @@
 
 #' plotUmap
 #'
-#' ggplot wrapper for UMAP
+#' ggplot wrapper for UMAP.
+#' If number of features exceed 10000, 10% of all features were randomly selected then ordered by level of variance. Out of them, top 1000 features were used.
 #' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
 #' @param sampleAttr - a data frame of sample meta data, whose order by row matches colnames of data_mx
 #' @param nGroupMax - maximum number of categories for categorical meta data.
@@ -15,6 +16,11 @@
 #' @import umap ggplot2
 #' @export
 plotUmap=function(data_mx,sampleAttr=data.frame(),label,nGroupMax=10,axistextsize=10,dotsize=2,legendtextsize=9,textlabelsize=0.5){
+  if(nrow(data_mx)>10000){
+    message("*** selecting top 1000 variable features ***")
+    data_mx=data_mx[
+      names(head(sort(apply(data_mx[sample(1:nrow(data_mx),nrow(data_mx)/10),], 1, var),decreasing=T),1000)),]
+  }
   n_neighbors=round(0.25*as.numeric(ncol(data_mx)))
   min_dist=0.1
   config=umap.defaults
