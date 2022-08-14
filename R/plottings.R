@@ -127,3 +127,94 @@ plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,heade
 #'
 #'
 #' }
+#'
+#'
+#'
+
+#' plot heatMap
+
+plotHeatmap=function(data_mx,
+                     classVector,
+                     classColorMatchList,
+                     colorRowSide=F,
+                     rowClassVector=NULL,
+                     heatColors=c("white","steelblue"),
+                     colorby=c("value","rank"),
+                     colorThresh=NULL,
+                     dendrogram = c("both"),
+                     Rowv=T,Colv=T,
+                     labRow=T,labCol=T
+                     ){
+  # set column side label colors
+  if(is.null(classColorMatchList)){
+    classColorMatch=cols4all::c4a("wright25",nlevels(classFactor))
+    names(classColorMatch)=levels(classFactor)
+  }
+  ColSideColors=classColorMatch[classFactor]
+
+  # set row side label colors
+  if(colorRowSide){
+    if(is.null(rowClassVector)){
+      RowSideColors=ColSideColors
+    }else{
+      RowSideColors=NULL
+    }
+  }
+
+  # set heat map colors
+  if(length(heatColors)==3){
+    message("using user provided heatCol_breaks")
+
+    if(colorby=="value"){
+      if(is.null(colorThresh)){
+        message("please provid colorThresh. try colorThresh=c(-2,2)")
+      }else{
+        col_breaks = c(seq(min(data_mx),colorThresh[1],length=20), # for low
+                       seq(colorThresh[1],colorThresh[2]-0.00000001,length=20), # for medium
+                       seq(colorThresh[2],max(data_mx),length=20)) # for high
+      }
+    }else if (colorby=="rank"){
+      temp=sort(data_mx)
+      tmp=floor(length(temp)/3)
+      temp=temp[c(1,tmp,2*tmp,length(temp))]
+      col_breaks = c(seq(temp[1],temp[2]-0.00000001,length=20), # for low
+                     seq(temp[2],temp[3]-0.00000001,length=20), # for medium
+                     seq(temp[3],temp[4],length=20)) # for high
+    }
+  }else{
+    col_breaks=seq(0,1,0.1)
+  }
+  heatColorGradient=colorRampPalette(heatColors)(n=length(col_breaks)-1)
+
+  # get legend
+  colordf = data.frame(x = 1:length(classColorMatch),
+                       y = 1:length(classColorMatch),
+                       group = names(classColorMatch))
+  ggp = ggplot(colordf, aes(x, y, color = group)) +
+    geom_point(shape=15) +
+    scale_color_manual(values=classColorMatch) +
+    theme_bw() +
+    theme(legend.title = element_blank())
+  colorLegend <- cowplot::get_legend(ggp)
+
+  # plot
+  gplots::heatmap.2(data_mx,
+                    dendrogram=dendrogram,
+                    Rowv=Rowv,
+                    Colv=Colv,
+                    trace="none",
+                    col=heatColorGradient,
+                    breaks=col_breaks,
+                    margins=c(10,10),
+                    ColSideColors = ColSideColors,
+                    RowSideColors = RowSideColors,
+                    labRow = labRow,
+                    labCol = labCol
+                    )
+  # gridGraphics::grid.echo()
+  # heatmap = grid::grid.grab()
+  # p.grid=gridExtra::grid.arrange(heatmap,colorLegend,nrow=1,widths=c(3.5,0.5))
+  heatmap=grDevices::recordPlot()
+  p.list=list(heatmap=heatmap,legend=colorLegend)
+  return(p.list)
+}

@@ -155,7 +155,7 @@ performTtestsAllClassesOneVsRest = function(dataMatrix,classVector){
 
   for(i in 1:nClasses){
     class = possibleClasses[i]
-    resultTest = perform_t_tests_all_rows(dataMatrix[,classVector==class],dataMatrix[,classVector!=class])
+    resultTest = performTtestsAllRows(dataMatrix[,classVector==class],dataMatrix[,classVector!=class])
     allPvalues[,i] = resultTest[,1]
     allDiffMeans[,i] = resultTest[,2]-resultTest[,3]
   }
@@ -189,7 +189,7 @@ performTtestsAllClassesEachPair = function(dataMatrix,classVector){
       class1 = possibleClasses[i]
       class2 = possibleClasses[j]
       names = c(names,paste(class1,class2,sep="."))
-      result = perform_t_tests_all_rows(dataMatrix[,classVector==class1],dataMatrix[,classVector==class2])
+      result = performTtestsAllRows(dataMatrix[,classVector==class1],dataMatrix[,classVector==class2])
       allPValues = cbind(allPValues,result[,1])
       allDiffMeans = cbind(allDiffMeans,result[,2] - result[,3])
     }
