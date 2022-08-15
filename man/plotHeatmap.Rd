@@ -19,10 +19,11 @@ if()}
 \usage{
 plotHeatmap(
   data_mx,
-  classVector,
-  classColorMatchList,
+  classFactor,
+  classColorMatch = NULL,
   colorRowSide = F,
-  rowClassVector = NULL,
+  rowClassFactor = NULL,
+  rowClassColorMatch = NULL,
   heatColors = c("white", "steelblue"),
   colorby = c("value", "rank"),
   colorThresh = NULL,
@@ -33,9 +34,57 @@ plotHeatmap(
   labCol = T
 )
 }
+\arguments{
+\item{data_mx}{\itemize{
+\item data matrix
+}}
+
+\item{classFactor}{\itemize{
+\item a factor of categories designation of samples (or column names of data_mx)
+}}
+
+\item{classColorMatch}{\itemize{
+\item a named vector of colors, each named by one of all possible categories in classFactor
+}}
+
+\item{colorRowSide}{\itemize{
+\item Boolean. Whether heat map row side should be colored.
+}}
+
+\item{rowClassFactor}{\itemize{
+\item a factor of categories designation of features (or row names of data_mx)
+}}
+
+\item{rowClassColorMatch}{\itemize{
+\item a named vector of colors, each named by one of all possible categories in rowClassFactor
+}}
+
+\item{heatColors}{\itemize{
+\item color of heat.
+}}
+
+\item{colorby}{\itemize{
+\item heat should by colored by values or ranks of values.
+}}
+
+\item{colorThresh}{\itemize{
+\item if colorby == "values", provide values of color change thresholds.
+}}
+
+\item{dendrogram}{\itemize{
+\item same as heatmap.2. Show dendrogram on "both", "row", "column" or "none".
+}}
+
+\item{Rowv}{\itemize{
+\item same as heatmap.2. cluster row.
+}}
+
+\item{Colv}{-same as heatmap.2. cluster col.}
+
+\item{labRow}{-same as heatmap.2. show row labels.}
+
+\item{labCol}{-same as heatmap.2. show column labels.}
+}
 \description{
 
-}
-\details{
-plot heatMap
 }

@@ -129,15 +129,35 @@ plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,heade
 #' }
 #'
 #'
+#' @import ggplot2
+
+#' plot heatmap
 #'
-
-#' plot heatMap
-
+#' @param data_mx - data matrix
+#' @param classFactor - a factor of categories designation of samples (or column names of data_mx)
+#' @param classColorMatch - a named vector of colors, each named by one of all possible categories in classFactor
+#' @param colorRowSide - Boolean. Whether heat map row side should be colored.
+#' @param rowClassFactor - a factor of categories designation of features (or row names of data_mx)
+#' @param rowClassColorMatch - a named vector of colors, each named by one of all possible categories in rowClassFactor
+#' @param heatColors - color of heat.
+#' @param colorby - heat should by colored by values or ranks of values.
+#' @param colorThresh - if colorby == "values", provide values of color change thresholds.
+#' @param dendrogram - same as heatmap.2. Show dendrogram on "both", "row", "column" or "none".
+#' @param Rowv - same as heatmap.2. cluster row.
+#' @param Colv -same as heatmap.2. cluster col.
+#' @param labRow -same as heatmap.2. show row labels.
+#' @param labCol -same as heatmap.2. show column labels.
+#' @import gplots ggplot2
+#' @importFrom cols4all c4a
+#' @importFrom cowplot get_legend
+#' @importFrom grDevices recordPlot
+#' @export
 plotHeatmap=function(data_mx,
-                     classVector,
-                     classColorMatchList,
+                     classFactor,
+                     classColorMatch=NULL,
                      colorRowSide=F,
-                     rowClassVector=NULL,
+                     rowClassFactor=NULL,
+                     rowClassColorMatch=NULL,
                      heatColors=c("white","steelblue"),
                      colorby=c("value","rank"),
                      colorThresh=NULL,
@@ -146,7 +166,7 @@ plotHeatmap=function(data_mx,
                      labRow=T,labCol=T
                      ){
   # set column side label colors
-  if(is.null(classColorMatchList)){
+  if(is.null(classColorMatch)){
     classColorMatch=cols4all::c4a("wright25",nlevels(classFactor))
     names(classColorMatch)=levels(classFactor)
   }
@@ -154,12 +174,19 @@ plotHeatmap=function(data_mx,
 
   # set row side label colors
   if(colorRowSide){
-    if(is.null(rowClassVector)){
+    if(is.null(rowClassFactor)){
       RowSideColors=ColSideColors
+      rowClassColorMatch=classColorMatch
+    }else{
+      if(is.null(rowClassColorMatch)){
+        rowClassColorMatch=cols4all::c4a("dark24",nlevels(rowClassFactor))
+        names(rowClassColorMatch)=levels(rowClassFactor)
+        RowSideColors=rowClassColorMatch[rowClassFactor]
+        }
+      }
     }else{
       RowSideColors=NULL
     }
-  }
 
   # set heat map colors
   if(length(heatColors)==3){
@@ -169,7 +196,7 @@ plotHeatmap=function(data_mx,
       if(is.null(colorThresh)){
         message("please provid colorThresh. try colorThresh=c(-2,2)")
       }else{
-        col_breaks = c(seq(min(data_mx),colorThresh[1],length=20), # for low
+        col_breaks = c(seq(min(data_mx),colorThresh[1]-0.00000001,length=20), # for low
                        seq(colorThresh[1],colorThresh[2]-0.00000001,length=20), # for medium
                        seq(colorThresh[2],max(data_mx),length=20)) # for high
       }
@@ -197,6 +224,16 @@ plotHeatmap=function(data_mx,
     theme(legend.title = element_blank())
   colorLegend <- cowplot::get_legend(ggp)
 
+  colordf = data.frame(x = 1:length(rowClassColorMatch),
+                       y = 1:length(rowClassColorMatch),
+                       group = names(rowClassColorMatch))
+  ggp = ggplot(colordf, aes(x, y, color = group)) +
+    geom_point(shape=15) +
+    scale_color_manual(values=rowClassColorMatch) +
+    theme_bw() +
+    theme(legend.title = element_blank())
+  rowColorLegend <- cowplot::get_legend(ggp)
+
   # plot
   gplots::heatmap.2(data_mx,
                     dendrogram=dendrogram,
@@ -215,6 +252,6 @@ plotHeatmap=function(data_mx,
   # heatmap = grid::grid.grab()
   # p.grid=gridExtra::grid.arrange(heatmap,colorLegend,nrow=1,widths=c(3.5,0.5))
   heatmap=grDevices::recordPlot()
-  p.list=list(heatmap=heatmap,legend=colorLegend)
+  p.list=list(heatmap=heatmap,legend=c(colorLegend,rowColorLegend))
   return(p.list)
 }
