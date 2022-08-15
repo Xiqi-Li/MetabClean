@@ -144,7 +144,8 @@ plotGraph=function(ig,S,size=NULL,membership,color=NULL,visNetworkOP=F,showLable
 #' @param labRow -same as heatmap.2. show row labels.
 #' @param labCol -same as heatmap.2. show column labels.
 #' @example
-#' @import gplots ggplot2
+#' @import gplots
+#' @import ggplot2
 #' @importFrom cols4all c4a
 #' @importFrom cowplot get_legend
 #' @importFrom grDevices recordPlot
@@ -187,22 +188,22 @@ plotHeatmap=function(data_mx,
 
   # set heat map colors
   if(length(heatColors)==3){
-    message("using user provided heatCol_breaks")
+    message("Using user provided heatCol_breaks")
 
     if(colorby=="value"){
       if(is.null(colorThresh)){
         message("please provid colorThresh. try colorThresh=c(-2,2)")
       }else{
-        col_breaks = c(seq(min(data_mx),colorThresh[1]-0.00000001,length=20), # for low
-                       seq(colorThresh[1],colorThresh[2]-0.00000001,length=20), # for medium
-                       seq(colorThresh[2],max(data_mx),length=20)) # for high
+        col_breaks = c(seq(min(data_mx),colorThresh[1]-0.0001,length=10), # for low
+                       seq(colorThresh[1],colorThresh[2]-0.0001,length=10), # for medium
+                       seq(colorThresh[2],max(data_mx),length=10)) # for high
       }
     }else if (colorby=="rank"){
       temp=sort(data_mx)
       tmp=floor(length(temp)/3)
       temp=temp[c(1,tmp,2*tmp,length(temp))]
-      col_breaks = c(seq(temp[1],temp[2]-0.00000001,length=20), # for low
-                     seq(temp[2],temp[3]-0.00000001,length=20), # for medium
+      col_breaks = c(seq(temp[1],temp[2]-0.0001,length=10), # for low
+                     seq(temp[2],temp[3]-0.0001,length=10), # for medium
                      seq(temp[3],temp[4],length=20)) # for high
     }
   }else{
