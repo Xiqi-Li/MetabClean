@@ -61,7 +61,6 @@ plotBoxPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID
 #' @param header4color - column name of sampelAttr used for color filling
 #' @param header4ID -column name of sampelAttr indicating sample IDs.
 #' @param palette color palette
-#'
 #' @importFrom reshape2 melt
 #' @example
 #' @export
@@ -110,28 +109,25 @@ plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,heade
   return(p)
 }
 
-#' #' plot blown-out modules in graph
-#' #'
-#' #' @param ig - igraph
-#' #' @param S - a set of node names
-#' #' @param header4x - column name of sampelAttr used for x-axis categories.
-#' #' @param header4color - column name of sampelAttr used for color filling
-#' #' @param header4ID -column name of sampelAttr indicating sample IDs.
-#' #' @param palette color palette
-#' #' @import visNetwork
-#' #' @importFrom reshape2 melt
-#' #' @example
-#' #' @export
-#' plotGraph=function(ig,S,size=NULL,membership,color=NULL,visNetworkOP=F,showLable=T){
-#'   if()
-#'
-#'
-#' }
-#'
-#'
-#' @import ggplot2
+# plot blown-out modules in graph
+#
+# @param ig - igraph
+# @param S - a set of node names
+# @param header4x - column name of sampelAttr used for x-axis categories.
+# @param header4color - column name of sampelAttr used for color filling
+# @param header4ID -column name of sampelAttr indicating sample IDs.
+# @param palette color palette
+# @import visNetwork
+# @importFrom reshape2 melt
+# @example
+plotGraph=function(ig,S,size=NULL,membership,color=NULL,visNetworkOP=F,showLable=T){
+}
 
-#' plot heatmap
+
+
+
+
+#' plot heat map
 #'
 #' @param data_mx - data matrix
 #' @param classFactor - a factor of categories designation of samples (or column names of data_mx)
@@ -147,6 +143,7 @@ plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,heade
 #' @param Colv -same as heatmap.2. cluster col.
 #' @param labRow -same as heatmap.2. show row labels.
 #' @param labCol -same as heatmap.2. show column labels.
+#' @example
 #' @import gplots ggplot2
 #' @importFrom cols4all c4a
 #' @importFrom cowplot get_legend

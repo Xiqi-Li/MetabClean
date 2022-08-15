@@ -2,20 +2,7 @@
 % Please edit documentation in R/plottings.R
 \name{plotHeatmap}
 \alias{plotHeatmap}
-\title{#' plot blown-out modules in graph
-#'
-#' @param ig - igraph
-#' @param S - a set of node names
-#' @param header4x - column name of sampelAttr used for x-axis categories.
-#' @param header4color - column name of sampelAttr used for color filling
-#' @param header4ID -column name of sampelAttr indicating sample IDs.
-#' @param palette color palette
-#' @import visNetwork
-#' @importFrom reshape2 melt
-#' @example
-#' @export
-plotGraph=function(ig,S,size=NULL,membership,color=NULL,visNetworkOP=F,showLable=T){
-if()}
+\title{plot heat map}
 \usage{
 plotHeatmap(
   data_mx,
@@ -86,5 +73,5 @@ plotHeatmap(
 \item{labCol}{-same as heatmap.2. show column labels.}
 }
 \description{
-
+plot heat map
 }
