@@ -250,6 +250,6 @@ plotHeatmap=function(data_mx,
   # heatmap = grid::grid.grab()
   # p.grid=gridExtra::grid.arrange(heatmap,colorLegend,nrow=1,widths=c(3.5,0.5))
   heatmap=grDevices::recordPlot()
-  p.list=list(heatmap=heatmap,legend=c(colorLegend,rowColorLegend))
+  p.list=list(heatmap=heatmap,legend=list(colorLegend,rowColorLegend))
   return(p.list)
 }
