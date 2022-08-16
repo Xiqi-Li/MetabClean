@@ -222,30 +222,51 @@ plotHeatmap=function(data_mx,
     theme(legend.title = element_blank())
   colorLegend <- cowplot::get_legend(ggp)
 
-  colordf = data.frame(x = 1:length(rowClassColorMatch),
-                       y = 1:length(rowClassColorMatch),
-                       group = names(rowClassColorMatch))
-  ggp = ggplot(colordf, aes(x, y, color = group)) +
-    geom_point(shape=15) +
-    scale_color_manual(values=rowClassColorMatch) +
-    theme_bw() +
-    theme(legend.title = element_blank())
-  rowColorLegend <- cowplot::get_legend(ggp)
+  if(colorRowSide){
+    colordf = data.frame(x = 1:length(rowClassColorMatch),
+                         y = 1:length(rowClassColorMatch),
+                         group = names(rowClassColorMatch))
+    ggp = ggplot(colordf, aes(x, y, color = group)) +
+      geom_point(shape=15) +
+      scale_color_manual(values=rowClassColorMatch) +
+      theme_bw() +
+      theme(legend.title = element_blank())
+    rowColorLegend <- cowplot::get_legend(ggp)
+  }else{
+    rowColorLegend =NULL
+  }
 
   # plot
-  gplots::heatmap.2(data_mx,
-                    dendrogram=dendrogram,
-                    Rowv=Rowv,
-                    Colv=Colv,
-                    trace="none",
-                    col=heatColorGradient,
-                    breaks=col_breaks,
-                    margins=c(10,10),
-                    ColSideColors = ColSideColors,
-                    RowSideColors = RowSideColors,
-                    labRow = labRow,
-                    labCol = labCol
-                    )
+  if(is.null(RowSideColors)){
+    gplots::heatmap.2(data_mx,
+                      dendrogram=dendrogram,
+                      Rowv=Rowv,
+                      Colv=Colv,
+                      trace="none",
+                      col=heatColorGradient,
+                      breaks=col_breaks,
+                      margins=c(10,10),
+                      ColSideColors = ColSideColors,
+                      # RowSideColors = RowSideColors,
+                      labRow = labRow,
+                      labCol = labCol
+    )
+  }else{
+    gplots::heatmap.2(data_mx,
+                      dendrogram=dendrogram,
+                      Rowv=Rowv,
+                      Colv=Colv,
+                      trace="none",
+                      col=heatColorGradient,
+                      breaks=col_breaks,
+                      margins=c(10,10),
+                      ColSideColors = ColSideColors,
+                      RowSideColors = RowSideColors,
+                      labRow = labRow,
+                      labCol = labCol
+    )
+  }
+
   # gridGraphics::grid.echo()
   # heatmap = grid::grid.grab()
   # p.grid=gridExtra::grid.arrange(heatmap,colorLegend,nrow=1,widths=c(3.5,0.5))
