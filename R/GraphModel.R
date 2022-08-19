@@ -240,7 +240,7 @@ disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, 
 #' @param useCasesMean - Use mean cases profile for calculating initial disease module.
 #' @return a list of best compressed node set, p value.
 #' @importFrom huge huge huge.select
-#' @importFrom CTD data.surrogateProfiles graph.naivePruning
+#' @importFrom CTD data.surrogateProfiles graph.naivePruning mle.getPtBSbyK
 #' @examples
 #' @export
 
