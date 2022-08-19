@@ -179,8 +179,8 @@ plotHeatmap=function(data_mx,
       if(is.null(rowClassColorMatch)){
         rowClassColorMatch=cols4all::c4a("dark24",nlevels(rowClassFactor))
         names(rowClassColorMatch)=levels(rowClassFactor)
-        RowSideColors=rowClassColorMatch[rowClassFactor]
-        }
+      }
+      RowSideColors=rowClassColorMatch[rowClassFactor]
       }
     }else{
       RowSideColors=NULL
@@ -194,9 +194,9 @@ plotHeatmap=function(data_mx,
       if(is.null(colorThresh)){
         message("please provid colorThresh. try colorThresh=c(-2,2)")
       }else{
-        col_breaks = c(seq(min(data_mx),colorThresh[1]-0.0001,length=10), # for low
+        col_breaks = c(seq(min(data_mx,na.rm = T),colorThresh[1]-0.0001,length=10), # for low
                        seq(colorThresh[1],colorThresh[2]-0.0001,length=10), # for medium
-                       seq(colorThresh[2],max(data_mx),length=10)) # for high
+                       seq(colorThresh[2],max(data_mx,na.rm = T),length=10)) # for high
       }
     }else if (colorby=="rank"){
       temp=sort(data_mx)
@@ -248,6 +248,7 @@ plotHeatmap=function(data_mx,
                       margins=c(10,10),
                       ColSideColors = ColSideColors,
                       # RowSideColors = RowSideColors,
+                      na.color = "grey",
                       labRow = labRow,
                       labCol = labCol
     )
@@ -262,6 +263,7 @@ plotHeatmap=function(data_mx,
                       margins=c(10,10),
                       ColSideColors = ColSideColors,
                       RowSideColors = RowSideColors,
+                      na.color = "grey",
                       labRow = labRow,
                       labCol = labCol
     )
@@ -271,6 +273,6 @@ plotHeatmap=function(data_mx,
   # heatmap = grid::grid.grab()
   # p.grid=gridExtra::grid.arrange(heatmap,colorLegend,nrow=1,widths=c(3.5,0.5))
   heatmap=grDevices::recordPlot()
-  p.list=list(heatmap=heatmap,legend=list(colorLegend,rowColorLegend))
+  p.list=list(heatmap=heatmap,legend=list(colorLegend=colorLegend,rowColorLegend=rowColorLegend))
   return(p.list)
 }

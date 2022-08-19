@@ -87,14 +87,39 @@ learnModel=function(data_mx,cases,controls,fillRateThreashold,useIgRef=F,ig_ref=
 
 #' getCTDmodule
 #'
-#' learn condition-specific models
-#' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
-#' @param cases - vector of index or column names corresponding to cases
-#' @param controls - vector of index or column names corresponding to controls
-#' @param fillRateThreashold - percentage of allowed minimum non-NA value percentage per feature.
-#' @param useIgRef - Boolean. If TRUE, provide ig_ref as graph learned from references
-#' @param ig_ref - graph learned from references
-#' @return learned network in igraph object
+#' @export
+getRanks=function(S,ig,p1=0.9,thresholdDiff=0.01){
+  ## get adjacency_matrix and G
+  adjacency_matrix = as.matrix(get.adjacency(ig, attr="weight"))
+  G = vector(mode="list", length=length(V(ig)$name))
+  names(G) = V(ig)$name
+  S=S[S%in%names(G)]
+  ## ranks ##
+  ranks = list()
+  for (n in 1:length(S)) {
+    ind = which(names(G)==S[n])
+    #probability_difussion starting from node with index ind
+    ranks[[S[n]]]=CTD::singleNode.getNodeRanksN(ind,G,p1=p1,
+                                                thresholdDiff=thresholdDiff,
+                                                adj_mat=adjacency_matrix,S=S,
+                                                num.misses=log2(length(G)),TRUE)
+  }
+  return(ranks)
+}
+
+#' getCTDmodule
+#'
+#' get best compressed subset of input nodes and out put significance
+#' @param ig - background network (condition-specific network).
+#' @param profile - named vector of sample omic profile named by corresponding feature name. If useS set as TRUE and S is provided, kmx can be NULL.
+#' @param kmx - number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
+#' @param useRanks - Boolean. Whether to use user provided ranks.
+#' @param ranks - if useRanks is set as TRUE, provide calculated ranks here.
+#' @param useS - Boolean. If TRUE, provide S as input node set.
+#' @param S - vector of input node set.
+#' @param p1 - parameter passed on to singleNode.getNodeRanksN. if useRanks is TRUE and ranks is provided then this value is ignored.
+#' @param thresholdDiff - parameter passed on to singleNode.getNodeRanksN. if useRanks is TRUE and ranks is provided then this value is ignored.
+#' @return a list of best compressed node set, p value.
 #' @importFrom huge huge huge.select
 #' @importFrom CTD data.surrogateProfiles graph.naivePruning
 #' @examples
@@ -159,4 +184,188 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
     }
 
   return(result)
+}
+
+#' get distance to disease module
+#'
+#' @param dis_mod - a vector of disease module
+#' @example
+#' @export
+disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G) {
+  p1.e = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID, G)[,"IS.alt"]
+  p2.e = mle.getEncodingLength(p2.optBS, NULL, ptID2, G)[,"IS.alt"]
+
+  # Using predefined node ranks, get optimal bitstring for encoding of patient1's union patient2's subsets.
+  p12.sig.nodes = unique(c(dis_mod, p2.sig.nodes))
+  p12.e = c()
+  for (k in 1:length(ptBSbyK.dis)) {
+    dis_mod_cpy = dis_mod
+    p2.sig.nodes_cpy = p2.sig.nodes
+
+    dis_mod_k = names(which(ptBSbyK.dis[[k]]==1))
+    p2.sig.nodes_k = names(which(p2.optBS[[k]]==1))
+    while (length(dis_mod_k)<k) {
+      dis_mod_k = unique(c(dis_mod_k, dis_mod_cpy[1]))
+      dis_mod_cpy = dis_mod_cpy[-1]
+    }
+    while (length(p2.sig.nodes_k)<k) {
+      p2.sig.nodes_k = unique(c(p2.sig.nodes_k, p2.sig.nodes_cpy[1]))
+      p2.sig.nodes_cpy = p2.sig.nodes_cpy[-1]
+    }
+    p12.sig.nodes_k = sapply(unique(c(dis_mod_k, p2.sig.nodes_k)), trimws)
+    p12.optBS = mle.getPtBSbyK(p12.sig.nodes_k, ranks, num.misses = log2(length(G)))
+    res = mle.getEncodingLength(p12.optBS, NULL, NULL, G)
+    p12.e[k] = res[which.max(res[,"d.score"]), "IS.alt"] + log2(choose(length(G), 1))*(length(p12.sig.nodes_k)-which.max(res[,"d.score"]))
+  }
+  return (list(p1.e=p1.e, p2.e=p2.e, p12.e=p12.e,
+               NCD=(p12.e-apply(cbind(p1.e, p2.e), 1, min))/apply(cbind(p1.e, p2.e), 1, max)))
+}
+
+#' get disease module
+#'
+#' calculate disease module
+#' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
+#' @param cases - vector of index or column names corresponding to cases
+#' @param kmx - number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
+#' @param zThreshold - z-score threshold where values outside of range (-zThreshold,zThreshold) are considered abnormal.
+#' @param thresholdDiff - parameter passed on to singleNode.getNodeRanksN.
+#' @param ranksList - list of ranks. If CrossValidated is TRUE, provide ranks calculated from network folds with names corresponding to the left-out sample, and a ranks object calculatd from the network learned from all training samples named by "0".
+#' @param igList - list of background networks. If CrossValidated is TRUE, provide network folds with names corresponding to the left-out sample, and a network learned from all training samples named by "0".
+#' @param CrossValidated - set as TRUE if cross-validated method were used when learning background networks.
+#' @param useCasesMean - Use mean cases profile for calculating initial disease module.
+#' @return a list of best compressed node set, p value.
+#' @importFrom huge huge huge.select
+#' @importFrom CTD data.surrogateProfiles graph.naivePruning
+#' @examples
+#' MOI=c(names(orderNCut(data_mx[,cohorts$MSD[1]],threshold=1.7,N=2*kmx)),
+#' names(orderNCut(data_mx[,cohorts$MSD[2]],threshold=1.7,N=2*kmx)),
+#' names(orderNCut(rowMeans(data_mx[,cohorts$MSD]),threshold=1.7,N=2*kmx))
+#' )
+#' ranks=getRanks(S=unique(MOI),ig=ig)
+#' @export
+
+getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,CrossValidated=F,useCasesMean=T){
+  # set function
+
+  data_mx=data_mx[,which(colnames(data_mx) %in% cases)]
+  downtown_disease_module = c()
+
+  if(useCasesMean){
+    message("Calculating best compressed set from average disease profile")
+    mn = apply(data_mx, 1, function(i) mean(na.omit(i)))
+    if(sum(is.na(mn)>0)){mn = mn[-which(is.na(mn))]}
+
+    if(CrossValidated){
+      for (pt in cases) {
+        ig = igList[[pt]]
+        ranks = ranksList[[pt]]
+        adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
+
+        G = vector(mode="list", length=length(V(ig)$name))
+        names(G) = V(ig)$name
+        S = mn[which(abs(mn)>zThreshold)] # change mean z-score threshold for abnomral molecules
+        S = S[which(names(S) %in% names(G))]
+        it=0
+        while (length(S)< kmx) { # change the length of wanted abnomral molecules
+          S = mn[which(abs(mn)>(zThreshold-0.1*it))]
+          S = S[which(names(S) %in% names(G))]
+          it = it + 1
+        }
+        ptBSbyK = mle.getPtBSbyK(names(S), ranks, num.misses = log2(length(G)))
+        res = mle.getEncodingLength(ptBSbyK, NULL, NULL, G)
+        downtown_disease_module = c(downtown_disease_module, names(which(ptBSbyK[[which.max(res[,"d.score"])]]==1)))
+      }
+    }else{
+      ig = igList[["0"]]
+      ranks = ranksList[["0"]]
+      adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
+
+      G = vector(mode="list", length=length(V(ig)$name))
+      names(G) = V(ig)$name
+      S = mn[which(abs(mn)>zThreshold)] # change mean z-score threshold for abnomral molecules
+      S = S[which(names(S) %in% names(G))]
+      it=0
+      while (length(S)< kmx) { # change the length of wanted abnomral molecules
+        S = mn[which(abs(mn)>(zThreshold-0.1*it))]
+        S = S[which(names(S) %in% names(G))]
+        it = it + 1
+      }
+      ptBSbyK = mle.getPtBSbyK(names(S), ranks, num.misses = log2(length(G)))
+      res = mle.getEncodingLength(ptBSbyK, NULL, NULL, G)
+      downtown_disease_module = c(downtown_disease_module, names(which(ptBSbyK[[which.max(res[,"d.score"])]]==1)))
+    }
+    print(sprintf("Initial size of downtown disease module (calculated from averaged cases profile): %s",length(unique(downtown_disease_module))))
+  }else{
+    message("Calculating best compressed set from all cases profiles")
+    for (pt in cases) {
+      if(CrossValidated){
+        ig=igList[[pt]]
+        ranks=ranksList[[pt]]
+      }else{
+        ig=igList[["0"]]
+        ranks=ranksList[["0"]]
+      }
+      CTD.ind=getCTDmodule(ig=ig,profile=data_mx[,pt],kmx=kmx,useRanks=T,ranks=ranks,useS=F,S=NULL,p1=0.9,thresholdDiff=0.01)
+      downtown_disease_module = c(downtown_disease_module, CTD.ind$`compressed node set`)
+    }
+  }
+
+  # Estimate disease module "purity" based on 2 size thresholds and known case mean distances
+  ig = igList[["0"]]
+  ranks = ranksList[["0"]]
+  adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
+  G = vector(mode="list", length=length(V(ig)$name))
+  names(G) = V(ig)$name
+  data_mx = data_mx[which(rownames(data_mx) %in% V(ig)$name), ]
+  purity_mets = list()
+  purity = c()
+  # Size1: Full downtown disease module
+  tmp.mm = unique(downtown_disease_module)
+  tmp.mm = tmp.mm[which(tmp.mm %in% names(G))]
+  ptBSbyK.dis = mle.getPtBSbyK(tmp.mm, ranks, num.misses = log2(length(G)))
+  res = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID, G)
+  downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,"d.score"])]]==1))
+  dd = c()
+  for (pt in 1:length(cases)) {
+    ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_mod), ranks, num.misses = log2(length(G)))
+    p2.sig.nodes = names(data_mx[order(abs(data_mx[,cases[pt]]), decreasing = TRUE), cases[pt]][1:length(unique(downtown_disease_mod))])
+    p2.optBS = mle.getPtBSbyK(p2.sig.nodes, ranks, num.misses = log2(length(G)))
+    ctdsim = disFromDowntown(unique(downtown_disease_mod), ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
+    dd[pt] = min(ctdsim$NCD)
+  }
+  purity_mets[[1]] = unique(downtown_disease_mod)
+  purity[1] = mean(dd)
+  print(sprintf("Full size of the best compressed downtown disease module: %s; purity: %s",length(unique(downtown_disease_mod)),purity[1]))
+
+  if (!(CrossValidated==F & useCasesMean==T)){
+    # Size2: Smaller disease module
+    downtown_disease_module = names(which(table(downtown_disease_module)>(length(cohorts[[model]])/2)))
+    tmp.mm = unique(downtown_disease_module)
+    tmp.mm = tmp.mm[which(tmp.mm %in% names(G))]
+    ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_module), ranks, num.misses = log2(length(G)))
+    res = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID, G)
+    downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,"d.score"])]]==1))
+    print(length(unique(downtown_disease_mod)))
+    dd = c()
+    for (pt in 1:length(cases)) {
+      ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_mod), ranks, num.misses = log2(length(G)))
+      p2.sig.nodes = names(data_mx[order(abs(data_mx[,pt]), decreasing = TRUE), pt][1:length(unique(downtown_disease_mod))])
+      p2.optBS = mle.getPtBSbyK(p2.sig.nodes, ranks, num.misses = log2(length(G)))
+      ctdsim = disFromDowntown(unique(downtown_disease_mod), ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
+      dd[pt] = min(ctdsim$NCD)
+    }
+    purity_mets[[2]] = downtown_disease_mod
+    purity[2] = mean(dd)
+    print(sprintf("Smaller size of the best compressed downtown disease module: %s; purity: %s",length(unique(downtown_disease_mod)),purity[2]))
+  }
+
+
+  # Selected disease module based on "purity" estimates
+  downtown_disease_module = purity_mets[[which.min(purity)]]
+  result=list(disease_module=downtown_disease_module,
+              cases_module_profiles=data_mx[downtown_disease_module,],
+              features=purity_mets,
+              purity=purity)
+  return(result)
+
 }

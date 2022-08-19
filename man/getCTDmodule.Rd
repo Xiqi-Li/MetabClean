@@ -17,33 +17,45 @@ getCTDmodule(
 )
 }
 \arguments{
-\item{data_mx}{\itemize{
-\item Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
+\item{ig}{\itemize{
+\item background network (condition-specific network).
 }}
 
-\item{cases}{\itemize{
-\item vector of index or column names corresponding to cases
+\item{profile}{\itemize{
+\item named vector of sample omic profile named by corresponding feature name. If useS set as TRUE and S is provided, kmx can be NULL.
 }}
 
-\item{controls}{\itemize{
-\item vector of index or column names corresponding to controls
+\item{kmx}{\itemize{
+\item number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
 }}
 
-\item{fillRateThreashold}{\itemize{
-\item percentage of allowed minimum non-NA value percentage per feature.
+\item{useRanks}{\itemize{
+\item Boolean. Whether to use user provided ranks.
 }}
 
-\item{useIgRef}{\itemize{
-\item Boolean. If TRUE, provide ig_ref as graph learned from references
+\item{ranks}{\itemize{
+\item if useRanks is set as TRUE, provide calculated ranks here.
 }}
 
-\item{ig_ref}{\itemize{
-\item graph learned from references
+\item{useS}{\itemize{
+\item Boolean. If TRUE, provide S as input node set.
+}}
+
+\item{S}{\itemize{
+\item vector of input node set.
+}}
+
+\item{p1}{\itemize{
+\item parameter passed on to singleNode.getNodeRanksN. if useRanks is TRUE and ranks is provided then this value is ignored.
+}}
+
+\item{thresholdDiff}{\itemize{
+\item parameter passed on to singleNode.getNodeRanksN. if useRanks is TRUE and ranks is provided then this value is ignored.
 }}
 }
 \value{
-learned network in igraph object
+a list of best compressed node set, p value.
 }
 \description{
-learn condition-specific models
+get best compressed subset of input nodes and out put significance
 }

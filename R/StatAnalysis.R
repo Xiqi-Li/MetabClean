@@ -13,10 +13,12 @@
 getFill=function(x,byColumn=F){
   if(byColumn){
     fill=apply(x, 2, function(x) sum(is.na(x)))/nrow(x)
+    names(fill)=colnames(x)
   }else{
     fill=apply(x, 1, function(x) sum(is.na(x)))/ncol(x)
+    names(fill)=rownames(x)
   }
-  names(fill)=rownames(x)
+
   return(1-fill)
 }
 
