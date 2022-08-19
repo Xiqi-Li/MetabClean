@@ -234,3 +234,11 @@ combineDatasets = function(ref, research) {
   return(data)
 }
 
+#' generate random folds by bin size
+#' @export
+generateFolds=function(x,binSize){
+  x=sample(x,length(x))
+  ind=rep(1:ceiling(length(x)/binSize),binSize+1)[1:length(x)]
+  Folds=lapply(unique(ind), function(i) x[ind==i])
+  return(Folds)
+}

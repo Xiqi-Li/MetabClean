@@ -58,10 +58,3 @@ a list of best compressed node set, p value.
 \description{
 calculate disease module
 }
-\examples{
-MOI=c(names(orderNCut(data_mx[,cohorts$MSD[1]],threshold=1.7,N=2*kmx)),
-names(orderNCut(data_mx[,cohorts$MSD[2]],threshold=1.7,N=2*kmx)),
-names(orderNCut(rowMeans(data_mx[,cohorts$MSD]),threshold=1.7,N=2*kmx))
-)
-ranks=getRanks(S=unique(MOI),ig=ig)
-}

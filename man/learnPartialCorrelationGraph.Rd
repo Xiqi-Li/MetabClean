@@ -20,7 +20,7 @@ learnPartialCorrelationGraph(data_mx, cases, controls, fillRateThreashold)
 }}
 
 \item{fillRateThreashold}{\itemize{
-\item percentage of allowed minimum non-NA value percentage per feature.
+\item percentage of allowed minimum non-NA value percentage per feature in cases and controls.
 }}
 }
 \value{

@@ -4,7 +4,7 @@
 #' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
 #' @param cases - vector of index or column names corresponding to cases
 #' @param controls - vector of index or column names corresponding to controls
-#' @param fillRateThreashold - percentage of allowed minimum non-NA value percentage per feature.
+#' @param fillRateThreashold - percentage of allowed minimum non-NA value percentage per feature in cases and controls.
 #' @return learned network in igraph object
 #' @importFrom huge huge huge.select
 #' @import igraph
@@ -86,7 +86,12 @@ learnModel=function(data_mx,cases,controls,fillRateThreashold,useIgRef=F,ig_ref=
 }
 
 #' getCTDmodule
-#'
+#' @example
+#' MOI=c(names(orderNCut(data_mx[,cohorts$MSD[1]],threshold=1.7,N=2*kmx)),
+#' names(orderNCut(data_mx[,cohorts$MSD[2]],threshold=1.7,N=2*kmx)),
+#' names(orderNCut(rowMeans(data_mx[,cohorts$MSD]),threshold=1.7,N=2*kmx))
+#' )
+#' ranks=getRanks(S=unique(MOI),ig=ig)
 #' @export
 getRanks=function(S,ig,p1=0.9,thresholdDiff=0.01){
   ## get adjacency_matrix and G
@@ -237,11 +242,6 @@ disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, 
 #' @importFrom huge huge huge.select
 #' @importFrom CTD data.surrogateProfiles graph.naivePruning
 #' @examples
-#' MOI=c(names(orderNCut(data_mx[,cohorts$MSD[1]],threshold=1.7,N=2*kmx)),
-#' names(orderNCut(data_mx[,cohorts$MSD[2]],threshold=1.7,N=2*kmx)),
-#' names(orderNCut(rowMeans(data_mx[,cohorts$MSD]),threshold=1.7,N=2*kmx))
-#' )
-#' ranks=getRanks(S=unique(MOI),ig=ig)
 #' @export
 
 getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,CrossValidated=F,useCasesMean=T){
@@ -305,7 +305,15 @@ getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,Cross
         ig=igList[["0"]]
         ranks=ranksList[["0"]]
       }
-      CTD.ind=getCTDmodule(ig=ig,profile=data_mx[,pt],kmx=kmx,useRanks=T,ranks=ranks,useS=F,S=NULL,p1=0.9,thresholdDiff=0.01)
+
+      S=orderNCut(data_mx[rownames(data_mx) %in% V(ig)$name,pt],zThreshold,kmx)
+      tmp=data_mx[names(S),pt]
+      it=0
+      while (length(S)< kmx) { # change the length of wanted abnomral molecules
+        S = tmp[which(abs(tmp)>(zThreshold-0.1*it))]
+        it = it + 1
+      }
+      CTD.ind=getCTDmodule(ig=ig,profile=NULL,kmx=NULL,useRanks=T,ranks=ranks,useS=T,S=names(S),p1=0.9,thresholdDiff=0.01)
       downtown_disease_module = c(downtown_disease_module, CTD.ind$`compressed node set`)
     }
   }
