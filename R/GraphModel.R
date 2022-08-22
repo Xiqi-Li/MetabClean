@@ -126,7 +126,7 @@ getRanks=function(S,ig,p1=0.9,thresholdDiff=0.01){
 #' @param thresholdDiff - parameter passed on to singleNode.getNodeRanksN. if useRanks is TRUE and ranks is provided then this value is ignored.
 #' @return a list of best compressed node set, p value.
 #' @importFrom huge huge huge.select
-#' @importFrom CTD data.surrogateProfiles graph.naivePruning
+#' @importFrom CTD data.surrogateProfiles graph.naivePruning mle.getEncodingLength
 #' @examples
 #' @export
 getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0.9,thresholdDiff=0.01){
@@ -231,17 +231,17 @@ disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, 
 #'
 #' calculate disease module
 #' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
-#' @param cases - vector of index or column names corresponding to cases
-#' @param kmx - number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
+#' @param cases - A Vector of index or column names corresponding to cases.
+#' @param kmx - The number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
 #' @param zThreshold - z-score threshold where values outside of range (-zThreshold,zThreshold) are considered abnormal.
 #' @param thresholdDiff - parameter passed on to singleNode.getNodeRanksN.
-#' @param ranksList - list of ranks. If CrossValidated is TRUE, provide ranks calculated from network folds with names corresponding to the left-out sample, and a ranks object calculatd from the network learned from all training samples named by "0".
-#' @param igList - list of background networks. If CrossValidated is TRUE, provide network folds with names corresponding to the left-out sample, and a network learned from all training samples named by "0".
+#' @param ranksList - A list of ranks. If CrossValidated is TRUE, provide ranks calculated from network folds with names corresponding to the left-out sample, and a ranks object calculatd from the network learned from all training samples named by "0".
+#' @param igList - A list of background networks. If CrossValidated is TRUE, provide network folds with names corresponding to the left-out sample, and a network learned from all training samples named by "0".
 #' @param CrossValidated - set as TRUE if cross-validated method were used when learning background networks.
 #' @param useCasesMean - Use mean cases profile for calculating initial disease module.
 #' @return a list of best compressed node set, p value.
 #' @importFrom huge huge huge.select
-#' @importFrom CTD data.surrogateProfiles graph.naivePruning mle.getPtBSbyK
+#' @importFrom CTD data.surrogateProfiles graph.naivePruning mle.getPtBSbyK mle.getEncodingLength
 #' @examples
 #' @export
 
@@ -380,7 +380,13 @@ getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,Cross
 }
 
 #' get CTD distance to disease module
-#'
+#' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
+#' @param cases - A Vector of column names corresponding to cases.
+#' @param diseaseModule - A Vector of node names representing disease module.
+#' @param igList - A list of graphs with names corresponding to names of Folds as character.
+#' @param rankList - A list of ranks with names corresponding to names of Folds as character.
+#' @param Folds - A list of assignment of left out samples of each training fold.
+#' @import CTD igraph
 #' @export
 CTDdm=function(data_mx,cases,diseaseModule,igList,rankList,Folds){
   mn = apply(data_mx[,which(colnames(data_mx) %in% cases)], 1, function(i) mean(na.omit(i)))

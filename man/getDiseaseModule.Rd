@@ -21,11 +21,11 @@ getDiseaseModule(
 }}
 
 \item{cases}{\itemize{
-\item vector of index or column names corresponding to cases
+\item A Vector of index or column names corresponding to cases.
 }}
 
 \item{kmx}{\itemize{
-\item number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
+\item The number of top perturbed features to use as input node set. If useS set as TRUE and S is provided, kmx can be NULL.
 }}
 
 \item{zThreshold}{\itemize{
@@ -33,11 +33,11 @@ getDiseaseModule(
 }}
 
 \item{ranksList}{\itemize{
-\item list of ranks. If CrossValidated is TRUE, provide ranks calculated from network folds with names corresponding to the left-out sample, and a ranks object calculatd from the network learned from all training samples named by "0".
+\item A list of ranks. If CrossValidated is TRUE, provide ranks calculated from network folds with names corresponding to the left-out sample, and a ranks object calculatd from the network learned from all training samples named by "0".
 }}
 
 \item{igList}{\itemize{
-\item list of background networks. If CrossValidated is TRUE, provide network folds with names corresponding to the left-out sample, and a network learned from all training samples named by "0".
+\item A list of background networks. If CrossValidated is TRUE, provide network folds with names corresponding to the left-out sample, and a network learned from all training samples named by "0".
 }}
 
 \item{CrossValidated}{\itemize{

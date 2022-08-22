@@ -6,6 +6,31 @@
 \usage{
 CTDdm(data_mx, cases, diseaseModule, igList, rankList, Folds)
 }
+\arguments{
+\item{data_mx}{\itemize{
+\item Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
+}}
+
+\item{cases}{\itemize{
+\item A Vector of column names corresponding to cases.
+}}
+
+\item{diseaseModule}{\itemize{
+\item A Vector of node names representing disease module.
+}}
+
+\item{igList}{\itemize{
+\item A list of graphs with names corresponding to names of Folds as character.
+}}
+
+\item{rankList}{\itemize{
+\item A list of ranks with names corresponding to names of Folds as character.
+}}
+
+\item{Folds}{\itemize{
+\item A list of assignment of left out samples of each training fold.
+}}
+}
 \description{
 get CTD distance to disease module
 }
