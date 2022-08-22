@@ -192,7 +192,7 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
   return(result)
 }
 
-#' get distance to disease module
+#' get distance to disease module (or other node set)
 #'
 #' @param dis_mod - a vector of disease module
 #' @example
@@ -393,7 +393,7 @@ CTDdm=function(data_mx,cases,diseaseModule,igList,rankList,Folds){
   if(sum(is.na(mn))>0){mn = mn[-which(is.na(mn))]}
 
   df_DISMOD=list()
-  for (fold in c(0,seq(Folds[[model]]))){
+  for (fold in c(0,seq(Folds))){
     ig = igList[[as.character(fold)]]
     ranks = ranksList[[as.character(fold)]]
     adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
