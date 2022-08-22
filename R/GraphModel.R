@@ -182,7 +182,8 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
   bestCompressedNodeSet=S[S %in% bestMod]
   if(max(res$d.score)<0){max(res$d.score)=0}
   result=list(`compressed node set`=bestCompressedNodeSet,
-              `p-value`=2^-(max(res$d.score)))
+              `p-value`=2^-(max(res$d.score)),
+              `bits`=max(res$d.score))
   if(!useS){
     result[["profile value"]]=profile[bestCompressedNodeSet]
     result[["profile value of input S"]]=profile[S]
@@ -377,3 +378,50 @@ getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,Cross
   return(result)
 
 }
+
+#' get CTD distance to disease module
+#'
+#' @export
+CTDdm=function(data_mx,cases,diseaseModule,igList,rankList,Folds){
+  mn = apply(data_mx[,which(colnames(data_mx) %in% cases)], 1, function(i) mean(na.omit(i)))
+  if(sum(is.na(mn))>0){mn = mn[-which(is.na(mn))]}
+
+  df_DISMOD=list()
+  for (fold in c(0,seq(Folds[[model]]))){
+    ig = igList[[as.character(fold)]]
+    ranks = ranksList[[as.character(fold)]]
+    adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
+    G = vector(mode="list", length=length(V(ig)$name))
+    names(G) = V(ig)$name
+    data_mx = data_mx[which(rownames(data_mx) %in% V(ig)$name), ]
+
+    tmp.mm = unique(diseaseModule)
+    tmp.mm = tmp.mm[which(tmp.mm %in% names(G))]
+    ptBSbyK.dis = mle.getPtBSbyK(tmp.mm, ranks, num.misses = log2(length(G)))
+    res = mle.getEncodingLength(ptBSbyK.dis, NULL, NULL, G)
+    downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,"d.score"])]]==1))
+    ptBSbyK.dis = mle.getPtBSbyK(downtown_disease_mod, ranks,num.misses = log2(length(G)))
+
+    df_disMod = data.frame(stringsAsFactors = FALSE)
+    for (p in 1:ncol(data_mx)) {
+      print(sprintf("Patient %d/%d...", p, ncol(data_mx)))
+      ptID = colnames(data_mx)[p]
+      if (ptID %in% cases) {diag = model}else{diag = "diagnose_not_match_model"}
+      # CTD: get module best explained by network's connectivity
+      S = data_mx[order(abs(data_mx[,p]), decreasing = TRUE),p]
+      p2.sig.nodes = names(S)[1:length(downtown_disease_mod)]
+      p2.optBS = mle.getPtBSbyK(p2.sig.nodes, ranks, num.misses = log2(length(G)))
+      ctdDisMod = disFromDowntown(downtown_disease_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
+      #if (ptID=="X606789") {print(min(ctdDisMod$NCD))}
+      df_disMod[p, "ptID"] = colnames(data_mx)[p]
+      df_disMod[p, "diag"] = diag[1]
+      df_disMod[p, "ctdDisMod"] = min(ctdDisMod$NCD)
+    }
+    df_DISMOD[[as.character(fold)]]=df_disMod
+  }
+  return(df_DISMOD)
+}
+
+
+
+
