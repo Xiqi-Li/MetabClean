@@ -37,7 +37,7 @@ plotUmap=function(data_mx,sampleAttr=data.frame(),label,nGroupMax=10,axistextsiz
   sampleAttr$max=apply(data_mx,2,max)
   sampleAttr$median=apply(data_mx,2,median)
   feature.names=apply(sampleAttr, c(2), function(x) length(table(x)))
-  feature.names=feature.names[class(sampleAttr[,names(feature.names)])== "numeric"|(feature.names<=nGroupMax&feature.names>1)]
+  feature.names=feature.names[sapply(sampleAttr[names(feature.names)],class)== "numeric"|(feature.names<=nGroupMax&feature.names>1)]
   feature.names=names(feature.names)
   for (feature.name in feature.names){
 
