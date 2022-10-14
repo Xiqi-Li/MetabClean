@@ -254,7 +254,7 @@ getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,Cross
   if(useCasesMean){
     message("Calculating best compressed set from average disease profile")
     mn = apply(data_mx, 1, function(i) mean(na.omit(i)))
-    if(sum(is.na(mn)>0)){mn = mn[-which(is.na(mn))]}
+    if(sum(is.na(mn))>0){mn = mn[-which(is.na(mn))]}
 
     if(CrossValidated){
       for (pt in cases) {
