@@ -389,8 +389,6 @@ getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,Cross
 #' @import CTD igraph
 #' @export
 CTDdm=function(data_mx,cases,diseaseModule,igList,rankList,Folds){
-  mn = apply(data_mx[,which(colnames(data_mx) %in% cases)], 1, function(i) mean(na.omit(i)))
-  if(sum(is.na(mn))>0){mn = mn[-which(is.na(mn))]}
 
   df_DISMOD=list()
   for (fold in c(0,seq(Folds))){
@@ -409,6 +407,8 @@ CTDdm=function(data_mx,cases,diseaseModule,igList,rankList,Folds){
     ptBSbyK.dis = mle.getPtBSbyK(downtown_disease_mod, ranks,num.misses = log2(length(G)))
 
     df_disMod = data.frame(stringsAsFactors = FALSE)
+    print(sprintf("Fold %d...", fold))
+
     for (p in 1:ncol(data_mx)) {
       print(sprintf("Patient %d/%d...", p, ncol(data_mx)))
       ptID = colnames(data_mx)[p]
