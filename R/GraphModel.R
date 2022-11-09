@@ -245,140 +245,159 @@ disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, 
 #' @examples
 #' @export
 
-getDiseaseModule=function(data_mx,cases,kmx=30,zThreshold,ranksList,igList,CrossValidated=F,useCasesMean=T){
-  # set function
-
-  data_mx=data_mx[,which(colnames(data_mx) %in% cases)]
+getDiseaseModule=function (data_mx, cases, kmx = 30, zThreshold, ranksList, igList,
+                           CrossValidated = F, useCasesMean = T)
+{
+  data_mx = data_mx[, which(colnames(data_mx) %in% cases)]
   downtown_disease_module = c()
-
-  if(useCasesMean){
+  if (useCasesMean) {
     message("Calculating best compressed set from average disease profile")
     mn = apply(data_mx, 1, function(i) mean(na.omit(i)))
-    if(sum(is.na(mn))>0){mn = mn[-which(is.na(mn))]}
-
-    if(CrossValidated){
+    if (sum(is.na(mn) > 0)) {
+      mn = mn[-which(is.na(mn))]
+    }
+    if (CrossValidated) {
       for (pt in cases) {
         ig = igList[[pt]]
         ranks = ranksList[[pt]]
-        adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
-
-        G = vector(mode="list", length=length(V(ig)$name))
+        adjacency_matrix = list(as.matrix(get.adjacency(ig,
+                                                        attr = "weight")))
+        G = vector(mode = "list", length = length(V(ig)$name))
         names(G) = V(ig)$name
-        S = mn[which(abs(mn)>zThreshold)] # change mean z-score threshold for abnomral molecules
+        S = mn[which(abs(mn) > zThreshold)]
         S = S[which(names(S) %in% names(G))]
-        it=0
-        while (length(S)< kmx) { # change the length of wanted abnomral molecules
-          S = mn[which(abs(mn)>(zThreshold-0.1*it))]
+        it = 0
+        while (length(S) < kmx) {
+          S = mn[which(abs(mn) > (zThreshold - 0.1 *
+                                    it))]
           S = S[which(names(S) %in% names(G))]
           it = it + 1
         }
         ptBSbyK = mle.getPtBSbyK(names(S), ranks, num.misses = log2(length(G)))
-        res = mle.getEncodingLength(ptBSbyK, NULL, NULL, G)
-        downtown_disease_module = c(downtown_disease_module, names(which(ptBSbyK[[which.max(res[,"d.score"])]]==1)))
+        res = mle.getEncodingLength(ptBSbyK, NULL, NULL,
+                                    G)
+        downtown_disease_module = c(downtown_disease_module,
+                                    names(which(ptBSbyK[[which.max(res[, "d.score"])]] ==
+                                                  1)))
       }
-    }else{
+    }
+    else {
       ig = igList[["0"]]
       ranks = ranksList[["0"]]
-      adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
-
-      G = vector(mode="list", length=length(V(ig)$name))
+      adjacency_matrix = list(as.matrix(get.adjacency(ig,
+                                                      attr = "weight")))
+      G = vector(mode = "list", length = length(V(ig)$name))
       names(G) = V(ig)$name
-      S = mn[which(abs(mn)>zThreshold)] # change mean z-score threshold for abnomral molecules
+      S = mn[which(abs(mn) > zThreshold)]
       S = S[which(names(S) %in% names(G))]
-      it=0
-      while (length(S)< kmx) { # change the length of wanted abnomral molecules
-        S = mn[which(abs(mn)>(zThreshold-0.1*it))]
+      it = 0
+      while (length(S) < kmx) {
+        S = mn[which(abs(mn) > (zThreshold - 0.1 * it))]
         S = S[which(names(S) %in% names(G))]
         it = it + 1
       }
       ptBSbyK = mle.getPtBSbyK(names(S), ranks, num.misses = log2(length(G)))
-      res = mle.getEncodingLength(ptBSbyK, NULL, NULL, G)
-      downtown_disease_module = c(downtown_disease_module, names(which(ptBSbyK[[which.max(res[,"d.score"])]]==1)))
+      res = mle.getEncodingLength(ptBSbyK, NULL, NULL,
+                                  G)
+      downtown_disease_module = c(downtown_disease_module,
+                                  names(which(ptBSbyK[[which.max(res[, "d.score"])]] ==
+                                                1)))
     }
-    print(sprintf("Initial size of downtown disease module (calculated from averaged cases profile): %s",length(unique(downtown_disease_module))))
-  }else{
+    print(sprintf("Initial size of downtown disease module (calculated from averaged cases profile): %s",
+                  length(unique(downtown_disease_module))))
+  }else {
     message("Calculating best compressed set from all cases profiles")
     for (pt in cases) {
-      if(CrossValidated){
-        ig=igList[[pt]]
-        ranks=ranksList[[pt]]
-      }else{
-        ig=igList[["0"]]
-        ranks=ranksList[["0"]]
+      if (CrossValidated) {
+        ig = igList[[pt]]
+        ranks = ranksList[[pt]]
       }
-
-      S=orderNCut(data_mx[rownames(data_mx) %in% V(ig)$name,pt],zThreshold,kmx)
-      tmp=data_mx[names(S),pt]
-      it=0
-      while (length(S)< kmx) { # change the length of wanted abnomral molecules
-        S = tmp[which(abs(tmp)>(zThreshold-0.1*it))]
+      else {
+        ig = igList[["0"]]
+        ranks = ranksList[["0"]]
+      }
+      S = orderNCut(data_mx[rownames(data_mx) %in% V(ig)$name,
+                            pt], zThreshold, kmx)
+      tmp = data_mx[names(S), pt]
+      it = 0
+      while (length(S) < kmx) {
+        S = tmp[which(abs(tmp) > (zThreshold - 0.1 *
+                                    it))]
         it = it + 1
       }
-      CTD.ind=getCTDmodule(ig=ig,profile=NULL,kmx=NULL,useRanks=T,ranks=ranks,useS=T,S=names(S),p1=0.9,thresholdDiff=0.01)
-      downtown_disease_module = c(downtown_disease_module, CTD.ind$`compressed node set`)
+      CTD.ind = getCTDmodule(ig = ig, profile = NULL, kmx = NULL,
+                             useRanks = T, ranks = ranks, useS = T, S = names(S),
+                             p1 = 0.9, thresholdDiff = 0.01)
+      downtown_disease_module = c(downtown_disease_module,
+                                  CTD.ind$`compressed node set`)
     }
   }
-
-  # Estimate disease module "purity" based on 2 size thresholds and known case mean distances
   ig = igList[["0"]]
   ranks = ranksList[["0"]]
-  adjacency_matrix = list(as.matrix(get.adjacency(ig, attr="weight")))
-  G = vector(mode="list", length=length(V(ig)$name))
+  adjacency_matrix = list(as.matrix(get.adjacency(ig, attr = "weight")))
+  G = vector(mode = "list", length = length(V(ig)$name))
   names(G) = V(ig)$name
   data_mx = data_mx[which(rownames(data_mx) %in% V(ig)$name), ]
   purity_mets = list()
   purity = c()
-  # Size1: Full downtown disease module
   tmp.mm = unique(downtown_disease_module)
   tmp.mm = tmp.mm[which(tmp.mm %in% names(G))]
   ptBSbyK.dis = mle.getPtBSbyK(tmp.mm, ranks, num.misses = log2(length(G)))
   res = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID, G)
-  downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,"d.score"])]]==1))
+  downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,
+                                                                "d.score"])]] == 1))
   dd = c()
   for (pt in 1:length(cases)) {
-    ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_mod), ranks, num.misses = log2(length(G)))
-    p2.sig.nodes = names(data_mx[order(abs(data_mx[,cases[pt]]), decreasing = TRUE), cases[pt]][1:length(unique(downtown_disease_mod))])
+    ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_mod),
+                                 ranks, num.misses = log2(length(G)))
+    p2.sig.nodes = names(data_mx[order(abs(data_mx[, cases[pt]]),
+                                       decreasing = TRUE), cases[pt]][1:length(unique(downtown_disease_mod))])
     p2.optBS = mle.getPtBSbyK(p2.sig.nodes, ranks, num.misses = log2(length(G)))
-    ctdsim = disFromDowntown(unique(downtown_disease_mod), ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
+    ctdsim = disFromDowntown(unique(downtown_disease_mod),
+                             ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
     dd[pt] = min(ctdsim$NCD)
   }
   purity_mets[[1]] = unique(downtown_disease_mod)
   purity[1] = mean(dd)
-  print(sprintf("Full size of the best compressed downtown disease module: %s; purity: %s",length(unique(downtown_disease_mod)),purity[1]))
-
-  if (!(CrossValidated==F & useCasesMean==T)){
-    # Size2: Smaller disease module
-    downtown_disease_module = names(which(table(downtown_disease_module)>(length(cohorts[[model]])/2)))
-    tmp.mm = unique(downtown_disease_module)
-    tmp.mm = tmp.mm[which(tmp.mm %in% names(G))]
-    ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_module), ranks, num.misses = log2(length(G)))
-    res = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID, G)
-    downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,"d.score"])]]==1))
-    print(length(unique(downtown_disease_mod)))
-    dd = c()
-    for (pt in 1:length(cases)) {
-      ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_mod), ranks, num.misses = log2(length(G)))
-      p2.sig.nodes = names(data_mx[order(abs(data_mx[,pt]), decreasing = TRUE), pt][1:length(unique(downtown_disease_mod))])
-      p2.optBS = mle.getPtBSbyK(p2.sig.nodes, ranks, num.misses = log2(length(G)))
-      ctdsim = disFromDowntown(unique(downtown_disease_mod), ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
-      dd[pt] = min(ctdsim$NCD)
+  print(sprintf("Full size of the best compressed downtown disease module: %s; purity: %s",
+                length(unique(downtown_disease_mod)), purity[1]))
+  if (!(CrossValidated == F & useCasesMean == T)) {
+    downtown_disease_module = names(which(table(downtown_disease_module) >
+                                            (length(cohorts[[model]])/2)))
+    if(length(downtown_disease_module)>0){
+      tmp.mm = unique(downtown_disease_module)
+      tmp.mm = tmp.mm[which(tmp.mm %in% names(G))]
+      ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_module),
+                                   ranks, num.misses = log2(length(G)))
+      res = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID,
+                                  G)
+      downtown_disease_mod = names(which(ptBSbyK.dis[[which.max(res[,
+                                                                    "d.score"])]] == 1))
+      print(length(unique(downtown_disease_mod)))
+      dd = c()
+      for (pt in 1:length(cases)) {
+        ptBSbyK.dis = mle.getPtBSbyK(unique(downtown_disease_mod),
+                                     ranks, num.misses = log2(length(G)))
+        p2.sig.nodes = names(data_mx[order(abs(data_mx[,
+                                                       pt]), decreasing = TRUE), pt][1:length(unique(downtown_disease_mod))])
+        p2.optBS = mle.getPtBSbyK(p2.sig.nodes, ranks, num.misses = log2(length(G)))
+        ctdsim = disFromDowntown(unique(downtown_disease_mod),
+                                 ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
+        dd[pt] = min(ctdsim$NCD)
+      }
+      purity_mets[[2]] = downtown_disease_mod
+      purity[2] = mean(dd)
+      print(sprintf("Smaller size of the best compressed downtown disease module: %s; purity: %s",
+                    length(unique(downtown_disease_mod)), purity[2]))
+    }else{
+      message("None nodes in full size disease module found in more than one cases. Skipping calculating smaller size module.")
     }
-    purity_mets[[2]] = downtown_disease_mod
-    purity[2] = mean(dd)
-    print(sprintf("Smaller size of the best compressed downtown disease module: %s; purity: %s",length(unique(downtown_disease_mod)),purity[2]))
   }
-
-
-  # Selected disease module based on "purity" estimates
   downtown_disease_module = purity_mets[[which.min(purity)]]
-  result=list(disease_module=downtown_disease_module,
-              cases_module_profiles=data_mx[downtown_disease_module,],
-              features=purity_mets,
-              purity=purity)
+  result = list(disease_module = downtown_disease_module, cases_module_profiles = data_mx[downtown_disease_module,
+  ], features = purity_mets, purity = purity)
   return(result)
-
 }
-
 #' get CTD distance to disease module
 #' @param data_mx - Normalized, imputed, z-scored data. Data matrix includes features as rows, samples as columns.
 #' @param cases - A Vector of column names corresponding to cases.
