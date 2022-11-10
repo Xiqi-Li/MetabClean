@@ -318,7 +318,7 @@ getDiseaseModule=function (data_mx, cases, kmx = 30, zThreshold, ranksList, igLi
       }
       S = orderNCut(data_mx[rownames(data_mx) %in% V(ig)$name,
                             pt], zThreshold, kmx)
-      tmp = data_mx[names(S), pt]
+      tmp = data_mx[, pt]
       it = 0
       while (length(S) < kmx) {
         S = tmp[which(abs(tmp) > (zThreshold - 0.1 *
