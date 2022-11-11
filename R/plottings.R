@@ -161,7 +161,8 @@ plotHeatmap=function(data_mx,
                      colorThresh=NULL,
                      dendrogram = c("both"),
                      Rowv=T,Colv=T,
-                     labRow=T,labCol=T
+                     labRow=T,labCol=T,
+                     margins=c(10,10)
                      ){
   # set column side label colors
   if(is.null(classColorMatch)){
@@ -194,16 +195,16 @@ plotHeatmap=function(data_mx,
       if(is.null(colorThresh)){
         message("please provid colorThresh. try colorThresh=c(-2,2)")
       }else{
-        col_breaks = c(seq(min(data_mx,na.rm = T),colorThresh[1]-0.0001,length=10), # for low
-                       seq(colorThresh[1],colorThresh[2]-0.0001,length=10), # for medium
+        col_breaks = c(seq(min(data_mx,na.rm = T),colorThresh[1]-0.01,length=10), # for low
+                       seq(colorThresh[1],colorThresh[2]-0.01,length=10), # for medium
                        seq(colorThresh[2],max(data_mx,na.rm = T),length=10)) # for high
       }
     }else if (colorby=="rank"){
       temp=sort(data_mx)
       tmp=floor(length(temp)/3)
       temp=temp[c(1,tmp,2*tmp,length(temp))]
-      col_breaks = c(seq(temp[1],temp[2]-0.0001,length=10), # for low
-                     seq(temp[2],temp[3]-0.0001,length=10), # for medium
+      col_breaks = c(seq(temp[1],temp[2]-0.01,length=10), # for low
+                     seq(temp[2],temp[3]-0.01,length=10), # for medium
                      seq(temp[3],temp[4],length=20)) # for high
     }
   }else{
@@ -245,7 +246,7 @@ plotHeatmap=function(data_mx,
                       trace="none",
                       col=heatColorGradient,
                       breaks=col_breaks,
-                      margins=c(10,10),
+                      # margins=margins,
                       ColSideColors = ColSideColors,
                       # RowSideColors = RowSideColors,
                       na.color = "grey",
@@ -260,7 +261,7 @@ plotHeatmap=function(data_mx,
                       trace="none",
                       col=heatColorGradient,
                       breaks=col_breaks,
-                      margins=c(10,10),
+                      # margins=margins,
                       ColSideColors = ColSideColors,
                       RowSideColors = RowSideColors,
                       na.color = "grey",
