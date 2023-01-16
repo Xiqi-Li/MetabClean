@@ -1,5 +1,5 @@
 Package: MetabClean
-Title: 
+Title: Prepocess and Figures
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Xiqi",
@@ -8,8 +8,9 @@ Authors@R:
            email = "cissylee1992@gmail.com",
            comment = c(ORCID = "0000-0003-0875-8337"))
 Description: Essential -omic (metabolomics/transcriptomic) data clean up, preprocess, summary, batch detection and univariate analysis.
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+LazyData: true
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Imports: CTD, ggplot2, gplots, igraph, umap, Hmisc, cols4all, cowplot, ggcorrplot, ggpubr, grDevices, huge,reshape2, stats

@@ -42,7 +42,10 @@ timeStamp = function(date=F){
 #' @param x character vector of names to make legal
 #' @return The legal row/column names
 #' @examples
-#' rown <- makeLegalRowname(mets);
+#' \dontrun{
+#'   rown <- makeLegalRowname(mets)
+#'   }
+#'
 #' @export
 cleanUpRownames = function(mat, useRownames=FALSE) {
   if (useRownames) {
