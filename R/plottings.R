@@ -62,7 +62,7 @@ plotBoxPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID
 #' @param header4ID -column name of sampelAttr indicating sample IDs.
 #' @param palette color palette
 #' @importFrom reshape2 melt
-#' @example
+#'
 #' @export
 
 plotScatterPlot=function(data_mx,sampleAttr,MOI,header4x,header4color=NULL,header4ID,palette="Dark2"){
@@ -143,7 +143,7 @@ plotGraph=function(ig,S,size=NULL,membership,color=NULL,visNetworkOP=F,showLable
 #' @param Colv -same as heatmap.2. cluster col.
 #' @param labRow -same as heatmap.2. show row labels.
 #' @param labCol -same as heatmap.2. show column labels.
-#' @example
+#'
 #' @import gplots
 #' @import ggplot2
 #' @importFrom cols4all c4a

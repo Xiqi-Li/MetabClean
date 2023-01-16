@@ -18,7 +18,8 @@ plotHeatmap(
   Rowv = T,
   Colv = T,
   labRow = T,
-  labCol = T
+  labCol = T,
+  margins = c(10, 10)
 )
 }
 \arguments{

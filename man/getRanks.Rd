@@ -9,3 +9,12 @@ getRanks(S, ig, p1 = 0.9, thresholdDiff = 0.01)
 \description{
 getCTDmodule
 }
+\examples{
+\dontrun{
+MOI=c(names(orderNCut(data_mx[,cohorts$MSD[1]],threshold=1.7,N=2*kmx)),
+names(orderNCut(data_mx[,cohorts$MSD[2]],threshold=1.7,N=2*kmx)),
+names(orderNCut(rowMeans(data_mx[,cohorts$MSD]),threshold=1.7,N=2*kmx))
+)
+ranks=getRanks(S=unique(MOI),ig=ig)
+}
+}

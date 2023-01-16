@@ -86,12 +86,14 @@ learnModel=function(data_mx,cases,controls,fillRateThreashold,useIgRef=F,ig_ref=
 }
 
 #' getCTDmodule
-#' @example
+#' @examples
+#' \dontrun{
 #' MOI=c(names(orderNCut(data_mx[,cohorts$MSD[1]],threshold=1.7,N=2*kmx)),
 #' names(orderNCut(data_mx[,cohorts$MSD[2]],threshold=1.7,N=2*kmx)),
 #' names(orderNCut(rowMeans(data_mx[,cohorts$MSD]),threshold=1.7,N=2*kmx))
 #' )
 #' ranks=getRanks(S=unique(MOI),ig=ig)
+#' }
 #' @export
 getRanks=function(S,ig,p1=0.9,thresholdDiff=0.01){
   ## get adjacency_matrix and G
@@ -127,7 +129,6 @@ getRanks=function(S,ig,p1=0.9,thresholdDiff=0.01){
 #' @return a list of best compressed node set, p value.
 #' @importFrom huge huge huge.select
 #' @importFrom CTD data.surrogateProfiles graph.naivePruning mle.getEncodingLength
-#' @examples
 #' @export
 getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0.9,thresholdDiff=0.01){
   require(igraph)
@@ -195,7 +196,7 @@ getCTDmodule=function(ig,profile,kmx=30,useRanks=T,ranks=NULL,useS=F,S=NULL,p1=0
 #' get distance to disease module (or other node set)
 #'
 #' @param dis_mod - a vector of disease module
-#' @example
+#'
 #' @export
 disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G) {
   p1.e = mle.getEncodingLength(ptBSbyK.dis, NULL, ptID, G)[,"IS.alt"]
@@ -242,7 +243,7 @@ disFromDowntown = function(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, 
 #' @return a list of best compressed node set, p value.
 #' @importFrom huge huge huge.select
 #' @importFrom CTD data.surrogateProfiles graph.naivePruning mle.getPtBSbyK mle.getEncodingLength
-#' @examples
+#'
 #' @export
 
 getDiseaseModule=function (data_mx, cases, kmx = 30, zThreshold, ranksList, igList,

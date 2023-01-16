@@ -39,7 +39,7 @@ timeStamp = function(date=F){
 #' Make legal row/column names
 #'
 #' make legal row/column names
-#' @param x character vector of names to make legal
+#' @param mat character vector of names to make legal
 #' @return The legal row/column names
 #' @examples
 #' \dontrun{

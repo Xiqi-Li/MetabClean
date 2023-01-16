@@ -12,7 +12,7 @@
 #' @return list of plotly and/or ggplot object(s)
 #' @import plotly ggplot dplyr
 #' @importFrom stats prcomp
-#' @examples
+#'
 #' @export
 ## PCA
 plotPCA=function(data_mx,sampleAttr=data.frame(),

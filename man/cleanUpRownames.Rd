@@ -7,7 +7,7 @@
 cleanUpRownames(mat, useRownames = FALSE)
 }
 \arguments{
-\item{x}{character vector of names to make legal}
+\item{mat}{character vector of names to make legal}
 }
 \value{
 The legal row/column names
@@ -16,5 +16,8 @@ The legal row/column names
 make legal row/column names
 }
 \examples{
-rown <- makeLegalRowname(mets);
+\dontrun{
+  rown <- makeLegalRowname(mets)
+  }
+
 }

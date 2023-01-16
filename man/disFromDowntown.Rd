@@ -2,7 +2,7 @@
 % Please edit documentation in R/GraphModel.R
 \name{disFromDowntown}
 \alias{disFromDowntown}
-\title{get distance to disease module}
+\title{get distance to disease module (or other node set)}
 \usage{
 disFromDowntown(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
 }
@@ -12,5 +12,5 @@ disFromDowntown(dis_mod, ptBSbyK.dis, p2.sig.nodes, p2.optBS, ranks, G)
 }}
 }
 \description{
-get distance to disease module
+get distance to disease module (or other node set)
 }
