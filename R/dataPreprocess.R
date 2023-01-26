@@ -10,7 +10,7 @@
 #' rown <- makeLegalRowname(mets);
 #' @export makeLegalRowname
 makeLegalRowname = function(mets){
-  rown = tolower(trimws(mets))
+  rown = trimws(mets)
   rown = sapply(rown, function(x) gsub("\\*| \\(1)| \\(2)| \\(3)| \\[1]| \\[2]","",x, perl = FALSE))
   rown = trimws(rown)
   return(rown)
@@ -65,7 +65,7 @@ cleanUpRownames = function(mat, useRownames=FALSE) {
     mat = as.matrix(mat[-ind,])
     tmp = tmp[-ind]
   }
-  rownames(mat) = as.character(tolower(sapply(tmp, trimws)))
+  rownames(mat) = as.character(sapply(tmp, trimws))
   if (!useRownames) {
     mat = as.matrix(mat[,-1])
   }

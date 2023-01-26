@@ -9,8 +9,8 @@
 #' @param dotsize - dot size
 #' @param legendtextsize - legend text size
 #' @param textlabelsize - text label size
-#' @return list of plotly and/or ggplot object(s)
-#' @import plotly ggplot dplyr
+#' @return list of plotly and/or ggplot2 object(s)
+#' @import plotly ggplot2 dplyr
 #' @importFrom stats prcomp
 #'
 #' @export

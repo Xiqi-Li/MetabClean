@@ -50,7 +50,7 @@ plotPCA(
 }}
 }
 \value{
-list of plotly and/or ggplot object(s)
+list of plotly and/or ggplot2 object(s)
 }
 \description{
 plot PCA in plotly and ggplot
